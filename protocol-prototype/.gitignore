@@ -1,0 +1,4 @@
+data/
+test/
+.DS_Store
+MNIST/
