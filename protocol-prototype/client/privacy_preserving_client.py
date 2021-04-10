@@ -95,24 +95,13 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, mo
                 collected_shares.append(share)
 
         if addr_message in peer_list[:AGGREGATE_ACTORS]:
-            time.sleep(10)
-            if model_queue.empty():
-                print("You haven't received new message yet.")
-            else:
-                print('Queue size:', model_queue.qsize())
-                try:
-                    while True:
-                        collected_shares.append(model_queue.get_nowait())
-                except queue.Empty:
-                    print(
-                        "Aggregating with", len(collected_shares), "model(s) received...")
-
-            assert len(collected_shares) == len(peer_list), \
-                'Not all shares received'
+            while len(collected_shares) < len(peer_list):
+                collected_shares.append(model_queue.get())
 
             share_aggregate = aggregate_shares(collected_shares)
 
-            time.sleep(10)
+            print('Step 1 finished')
+
             collected_shares = []
             for peer_addr in peer_list[:AGGREGATE_ACTORS]:
                 if peer_addr != addr_message:
@@ -120,17 +109,12 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, mo
                 else:
                     collected_shares.append(share_aggregate)
 
-            print('First step finished. Doing next in 1 second')
-            time.sleep(10)
-
-            try:
-                while True:
-                    collected_shares.append(model_queue.get_nowait())
-            except queue.Empty:
-                print(
-                    "Final aggregating with", len(collected_shares), "model(s) received...")
+            while len(collected_shares) < AGGREGATE_ACTORS:
+                collected_shares.append(model_queue.get())
 
             final_aggregate = aggregate_shares(collected_shares)
+
+            print('Final aggregate calculated')
 
             aggregated_model = map_dict(
                 lambda arr: arr // len(peer_list),
@@ -144,15 +128,7 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, mo
                 for peer_addr in peer_list[AGGREGATE_ACTORS:]:
                     socket.send(peer_addr, aggregated_model)
         else:
-            time.sleep(50)
-            try:
-                aggregated_model = model_queue.get_nowait()
-            except queue.Empty as e:
-                print('No model received!')
-                raise
-
-            assert model_queue.empty(), 'Model queue must be empty!'
-
+            aggregated_model = model_queue.get()
 
         new_state_dict = convert_numpy_state_dict_to_torch(
             map_dict(
@@ -199,6 +175,9 @@ def parse_args():
                         help='The client address (default: 127.0.0.1:6000)')
     parser.add_argument('--server', default='127.0.0.1:5555', metavar='N',
                         help='The server address (default: 127.0.0.1:5555)')
+    parser.add_argument('--debug', default=False,
+                        action='store_true',
+                        help='Activate debug mode.')
     return parser.parse_args()
 
 
@@ -239,11 +218,12 @@ def main(args):
     model_queue = Queue()
 
     def on_message_callback(addr, message):
-        print(f'Received message from {addr}')
+        if args.debug:
+            print(f'Received message from {addr}')
         model_queue.put(message)
-        print('Added in queue, queue size:', model_queue.qsize())
 
-    s = ZMQDirectSocket(addr_message, debug_mode=True)
+    print(args.debug)
+    s = ZMQDirectSocket(addr_message, debug_mode=args.debug)
     s.start(on_message_callback)
 
     train_and_send(args, model, device, train_loader, test_loader,
