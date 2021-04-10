@@ -8,70 +8,29 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
-from multiprocessing import Queue, Process
 import queue
 import json
 import pickle
 import zmq
 import time
+from queue import Queue
 
+from utils.mlutils import train_epoch, test
 from utils.secret_sharing import create_additive_shares
 from utils.numberutils import convert_to_int_array, convert_to_float_array
 from utils.torchutils import convert_state_dict_to_numpy, \
     convert_numpy_state_dict_to_torch
 from utils.dictutils import map_dict
 
+import os,sys,inspect
+current_dir = os.path.dirname(
+    os.path.abspath(inspect.getfile(inspect.currentframe())))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(0, parent_dir)
+
+from netutils.zmqsockets import ZMQDirectSocket
+
 DIGITS_TO_KEEP = 6
-
-
-def train_epoch(args, model, device, train_loader, optimizer, epoch):
-    model.train()
-    for batch_idx, (data, target) in enumerate(train_loader):
-        data, target = data.to(device), target.to(device)
-        optimizer.zero_grad()
-        output = model(data)
-        loss = F.nll_loss(output, target)
-        loss.backward()
-        optimizer.step()
-        if batch_idx % args.log_interval == 0:
-            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                epoch, batch_idx * len(data), len(train_loader.dataset),
-                100. * batch_idx / len(train_loader), loss.item()))
-            if args.dry_run:
-                break
-
-
-def receive_model_messages(addr_message, model_queue):
-    # Initialize the socket for receiving messages.
-    context = zmq.Context()
-    recv_socket = context.socket(zmq.DEALER)
-    recv_socket.bind(addr_message)
-    print("Binding on socket " + addr_message)
-    while True:
-        model_message = recv_socket.recv_pyobj()
-        print("Received a new model message!")
-        model_queue.put(model_message)
-
-
-def test(model, device, test_loader):
-    model.eval()
-    test_loss = 0
-    correct = 0
-    with torch.no_grad():
-        for data, target in test_loader:
-            data, target = data.to(device), target.to(device)
-            output = model(data)
-            # sum up batch loss
-            test_loss += F.nll_loss(output, target, reduction='sum').item()
-            # get the index of the max log-probability
-            pred = output.argmax(dim=1, keepdim=True)
-            correct += pred.eq(target.view_as(pred)).sum().item()
-
-    test_loss /= len(test_loader.dataset)
-
-    print('Test set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
-        test_loss, correct, len(test_loader.dataset),
-        100. * correct / len(test_loader.dataset)))
 
 
 def prepare_state_dict_and_create_shares(state_dict, num_shares):
@@ -94,10 +53,9 @@ def aggregate_shares(shares):
     return result
 
 
-def train_and_send(args, model, device, train_loader, test_loader, optimizer, model_queue, addr_message):
+def train_and_send(args, model, device, train_loader, test_loader, optimizer, model_queue, addr_message, socket):
     # Initialize the socket for sending messages.
     context = zmq.Context()
-    send_socket = context.socket(zmq.DEALER)
     server_socket = context.socket(zmq.REQ)
     server_socket.connect('tcp://' + args.server)
     print("Connecting to server tcp://" + args.server)
@@ -132,20 +90,16 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, mo
 
         for peer_addr, share in zip(peer_list, additive_shares):
             if peer_addr != addr_message:
-                try:
-                    send_socket.connect(peer_addr)
-                    send_socket.send_pyobj(share)#, flags=zmq.NOBLOCK)
-                    print("Sent a message to a peer", peer_addr)
-                except:
-                    print("Sending a message failed")
+                socket.send(peer_addr, share)
             else:
                 collected_shares.append(share)
 
         if addr_message in peer_list[:AGGREGATE_ACTORS]:
-            time.sleep(15)
+            time.sleep(10)
             if model_queue.empty():
                 print("You haven't received new message yet.")
             else:
+                print('Queue size:', model_queue.qsize())
                 try:
                     while True:
                         collected_shares.append(model_queue.get_nowait())
@@ -158,16 +112,11 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, mo
 
             share_aggregate = aggregate_shares(collected_shares)
 
-            time.sleep(5)
+            time.sleep(10)
             collected_shares = []
             for peer_addr in peer_list[:AGGREGATE_ACTORS]:
                 if peer_addr != addr_message:
-                    try:
-                        send_socket.connect(peer_addr)
-                        send_socket.send_pyobj(share_aggregate, flags=zmq.NOBLOCK)
-                        print("Sent a message to a peer", peer_addr)
-                    except:
-                        print("Sending a message failed")
+                    socket.send(peer_addr, share_aggregate)
                 else:
                     collected_shares.append(share_aggregate)
 
@@ -191,22 +140,18 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, mo
             print('Aggregation done successfuly!')
 
             print('Sending non-aggregating actors the model')
-            for peer_addr in peer_list[AGGREGATE_ACTORS:]:
-                try:
-                    send_socket.connect(peer_addr)
-                    send_socket.send_pyobj(aggregated_model, flags=zmq.NOBLOCK)
-                    print("Sent a message to a peer", peer_addr)
-                except:
-                    print("Sending a message failed")
+            if addr_message == peer_list[0]:
+                for peer_addr in peer_list[AGGREGATE_ACTORS:]:
+                    socket.send(peer_addr, aggregated_model)
         else:
-            time.sleep(45)
+            time.sleep(50)
             try:
                 aggregated_model = model_queue.get_nowait()
             except queue.Empty as e:
                 print('No model received!')
                 raise
 
-            assert model_queue.empty(), 'Model queue is not empty!'
+            assert model_queue.empty(), 'Model queue must be empty!'
 
 
         new_state_dict = convert_numpy_state_dict_to_torch(
@@ -221,11 +166,9 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, mo
         print("\nTest result after averaging:")
         test(model, device, test_loader)
 
-
-def main():
+def parse_args():
     # Step 1:
     # Parse command line arguments about server address, local port number, peer number, etc.
-
     parser = argparse.ArgumentParser(description='DeAI peer client')
     parser.add_argument('--batch-size', type=int, default=64, metavar='N',
                         help='input batch size for training (default: 64)')
@@ -256,8 +199,12 @@ def main():
                         help='The client address (default: 127.0.0.1:6000)')
     parser.add_argument('--server', default='127.0.0.1:5555', metavar='N',
                         help='The server address (default: 127.0.0.1:5555)')
+    return parser.parse_args()
 
-    args = parser.parse_args()
+
+def main(args):
+    # Step 1:
+    # Prepare configuration
     use_cuda = not args.no_cuda and torch.cuda.is_available()
     torch.manual_seed(args.seed)
     device = torch.device("cuda" if use_cuda else "cpu")
@@ -280,7 +227,9 @@ def main():
     optimizer = optim.Adadelta(model.parameters(), lr=args.lr)
 
     train_set, test_set = data.load_data(args.num, args.total)
-    train_loader = torch.utils.data.DataLoader(train_set, **train_kwargs)
+    train_idx = list(range(0, len(train_set), 25))
+    trainset = torch.utils.data.Subset(train_set, train_idx)
+    train_loader = torch.utils.data.DataLoader(trainset, **train_kwargs)
     test_loader = torch.utils.data.DataLoader(test_set, **test_kwargs)
 
     # Step 3:
@@ -288,14 +237,19 @@ def main():
     # Use a queue to store received model messages.
     print("----------- Training and messaging started ----------- ")
     model_queue = Queue()
-    p1 = Process(target=train_and_send, args=(args, model, device, train_loader, test_loader,
-                                              optimizer, model_queue, addr_message))
-    p2 = Process(target=receive_model_messages,
-                 args=(addr_message, model_queue))
-    p1.start()
-    p2.start()
-    p1.join()
+
+    def on_message_callback(addr, message):
+        print(f'Received message from {addr}')
+        model_queue.put(message)
+        print('Added in queue, queue size:', model_queue.qsize())
+
+    s = ZMQDirectSocket(addr_message, debug_mode=True)
+    s.start(on_message_callback)
+
+    train_and_send(args, model, device, train_loader, test_loader,
+            optimizer, model_queue, addr_message, s)
+    s.stop()
 
 
 if __name__ == '__main__':
-    main()
+    main(parse_args())
