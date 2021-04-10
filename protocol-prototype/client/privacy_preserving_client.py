@@ -121,7 +121,7 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, mo
                     collected_shares.append(share_aggregate)
 
             print('First step finished. Doing next in 1 second')
-            time.sleep(5)
+            time.sleep(10)
 
             try:
                 while True:
