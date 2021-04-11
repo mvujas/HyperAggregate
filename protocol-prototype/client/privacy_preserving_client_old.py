@@ -61,13 +61,10 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, mo
     server_socket = context.socket(zmq.REQ)
     server_socket.connect('tcp://' + args.server)
     print("Connecting to server tcp://" + args.server)
-    # server_socket.send(addr_message.encode('utf-8'))
-    socket.send(server_address, Message(MessageType.AGGREGATION_SIGNUP))
-    socket.send(server_address, Message(MessageType.AGGREGATION_SIGNUP))
-    socket.send(server_address, Message(MessageType.AGGREGATION_SIGNUP))
-    # peer_list_message = server_socket.recv().decode('utf-8')
-    # print("Received server reply, existing peers:", peer_list_message)
-    exit(0)
+    server_socket.send(addr_message.encode('utf-8'))
+    peer_list_message = server_socket.recv().decode('utf-8')
+    print("Received server reply, existing peers:", peer_list_message)
+    
     for epoch in range(1, args.epochs + 1):
         print("----------- Epoch", epoch, "starts ----------- ")
         train_epoch(args, model, device, train_loader, optimizer, epoch)
