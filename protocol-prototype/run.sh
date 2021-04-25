@@ -2,10 +2,11 @@
 
 SERVER_PORT=5554
 BASE_CLIENT_PORT=10600
-NUM_CLIENTS=2
+NUM_CLIENTS=6
 NUM_EPOCHS=1
 DEBUG=1
-SUFFIX=_old
+SUFFIX=""
+#_old
 
 # Start server
 gnome-terminal -t "Server" -x bash -c "python server/server$SUFFIX.py --port $SERVER_PORT; read line"
