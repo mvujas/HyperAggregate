@@ -1,4 +1,5 @@
 import zmq
+import dill
 import time
 import queue
 import threading
@@ -84,7 +85,7 @@ class ZMQDirectSocket:
                 message = self.__message_queue.get(False, 0.01)
                 on_message_received_callback(
                     message.sender_addr,
-                    message.message)
+                    dill.loads(message.message))
             except queue.Empty:
                 time.sleep(1e-3)
 
@@ -111,7 +112,7 @@ class ZMQDirectSocket:
             wrapped_message = MessageWrapper(
                 self.__address,
                 dest_address,
-                message
+                dill.dumps(message)
             )
             socket = self.__get_socket(dest_address)
             socket.send_pyobj(wrapped_message, flags=zmq.NOBLOCK)
