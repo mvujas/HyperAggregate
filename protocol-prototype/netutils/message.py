@@ -4,7 +4,9 @@ class MessageType(Enum):
     HEALTH_CHECK, \
     HEALTH_CONFIRMATION, \
     AGGREGATION_SIGNUP, \
-    SIGNUP_CONFIRMATION = range(4)
+    SIGNUP_CONFIRMATION, \
+    GROUP_ASSIGNMENT = range(5)
+
 
 class Message(object):
     def __init__(self, message_type, payload=None):

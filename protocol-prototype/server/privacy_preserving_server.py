@@ -40,8 +40,10 @@ class SchedulingServer(AbstractMessageRouter):
                 self.__create_aggregation_tree_and_send_jobs()
 
     def __create_aggregation_tree_and_send_jobs(self):
-        aggregation_tree, aggregation_pointer_dict =    \
+        _, aggregation_pointer_dict =    \
             generate_aggregation_tree(list(self.__aggregation_queue), 3, 2)
+        for node_addr, node_groups in aggregation_pointer_dict.items():
+            self.send(
+                node_addr,
+                Message(MessageType.GROUP_ASSIGNMENT, node_groups))
         self.__aggregation_queue = set()
-        print(aggregation_tree)
-        print(aggregation_pointer_dict)

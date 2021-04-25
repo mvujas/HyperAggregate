@@ -56,18 +56,10 @@ def aggregate_shares(shares):
 
 def train_and_send(args, model, device, train_loader, test_loader, optimizer, model_queue, addr_message, socket):
     server_address = 'tcp://' + args.server
-    # Initialize the socket for sending messages.
-    context = zmq.Context()
-    server_socket = context.socket(zmq.REQ)
-    server_socket.connect('tcp://' + args.server)
-    print("Connecting to server tcp://" + args.server)
-    # server_socket.send(addr_message.encode('utf-8'))
-    socket.send(server_address, Message(MessageType.AGGREGATION_SIGNUP))
-    socket.send(server_address, Message(MessageType.AGGREGATION_SIGNUP))
     socket.send(server_address, Message(MessageType.AGGREGATION_SIGNUP))
     # peer_list_message = server_socket.recv().decode('utf-8')
     # print("Received server reply, existing peers:", peer_list_message)
-    exit(0)
+    time.sleep(100)
     for epoch in range(1, args.epochs + 1):
         print("----------- Epoch", epoch, "starts ----------- ")
         train_epoch(args, model, device, train_loader, optimizer, epoch)
@@ -225,6 +217,7 @@ def main(args):
     def on_message_callback(addr, message):
         if args.debug:
             print(f'Received message from {addr}')
+        print(message)
         model_queue.put(message)
 
     s = ZMQDirectSocket(addr_message, debug_mode=args.debug)

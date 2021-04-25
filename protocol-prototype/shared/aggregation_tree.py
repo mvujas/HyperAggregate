@@ -6,7 +6,7 @@ class AggregationGroup:
         self.participating_nodes = []
 
     def __str__(self):
-        return f'Group(level={self.level}, actors={self.aggregation_actors}, '\
+        return f'Group(level={self.level}; actors={self.aggregation_actors}; '\
             f'participants={self.participating_nodes})'
 
     def __repr__(self):
@@ -19,7 +19,7 @@ class AggregationTree:
         self.groups = []
 
     def __str__(self):
-        return f'Tree({self.groups})'
+        return f'Tree(groups={self.groups})'
 
     def __repr__(self):
         return self.__str__()
