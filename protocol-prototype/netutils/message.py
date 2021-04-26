@@ -5,7 +5,10 @@ class MessageType(Enum):
     HEALTH_CONFIRMATION, \
     AGGREGATION_SIGNUP, \
     SIGNUP_CONFIRMATION, \
-    GROUP_ASSIGNMENT = range(5)
+    GROUP_ASSIGNMENT, \
+    PARTIAL_MODEL_SHARE, \
+    FINAL_PARTIAL_SHARES, \
+    MODEL_UPDATE = range(8)
 
 
 class Message(object):

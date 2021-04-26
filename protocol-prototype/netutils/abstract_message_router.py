@@ -43,3 +43,8 @@ class AbstractMessageRouter(ABC):
     def debug(self):
         """Returns whether debug mode is active"""
         return self.__debug
+
+    @property
+    def address(self):
+        """Returns the address that socket is running on"""
+        return self.__socket.address

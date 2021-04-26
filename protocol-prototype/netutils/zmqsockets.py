@@ -37,6 +37,11 @@ class ZMQDirectSocket:
         self.__process_messages_thread = None
         self.__running = Value(c_bool, False)
 
+    @property
+    def address(self):
+        """Returns the address that socket is running on"""
+        return self.__address
+
     def stop(self):
         """Sets running indicator to false which stops the socket from
         receiving anymore message"""

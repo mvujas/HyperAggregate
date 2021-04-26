@@ -22,6 +22,8 @@ from utils.torchutils import convert_state_dict_to_numpy, \
     convert_numpy_state_dict_to_torch
 from utils.dictutils import map_dict
 
+from privacy_preserving_aggregator import PrivacyPreservingAggregator
+
 import os,sys,inspect
 current_dir = os.path.dirname(
     os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -54,12 +56,14 @@ def aggregate_shares(shares):
     return result
 
 
-def train_and_send(args, model, device, train_loader, test_loader, optimizer, model_queue, addr_message, socket):
-    server_address = 'tcp://' + args.server
-    socket.send(server_address, Message(MessageType.AGGREGATION_SIGNUP))
-    # peer_list_message = server_socket.recv().decode('utf-8')
-    # print("Received server reply, existing peers:", peer_list_message)
-    time.sleep(100)
+def train_and_send(args, model, device, train_loader, test_loader, optimizer, addr_message, server_address):
+    aggregator = PrivacyPreservingAggregator(addr_message, server_address, False)
+    aggregator.start()
+    # new_model_dict = aggregator.aggregate(model.state_dict())
+    # model.load_state_dict(new_model_dict)
+    # print('New model loaded')
+
+
     for epoch in range(1, args.epochs + 1):
         print("----------- Epoch", epoch, "starts ----------- ")
         train_epoch(args, model, device, train_loader, optimizer, epoch)
@@ -67,77 +71,13 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, mo
         test(model, device, test_loader)
         print("----------- Epoch", epoch, "finished ----------- ")
 
-        # Start to send model, every time we first get all existing peers' list
-        print("Connecting to server tcp://" + args.server)
-        server_socket.send(addr_message.encode('utf-8'))
-        peer_list_message = server_socket.recv().decode('utf-8')
-        print("Received server reply, existing peers:", peer_list_message)
-        peer_list = json.loads(peer_list_message)
-
-        model_message = model.state_dict()
-
-        # Everything below is hard coded to check how well the concept
-        # works and should be rewritten at later point in a more scalable
-        # way if the concept proves to be accepted
-        AGGREGATE_ACTORS = 2
-        additive_shares = prepare_state_dict_and_create_shares(model_message,
-            AGGREGATE_ACTORS)
-
-        collected_shares = []
-
-        for peer_addr, share in zip(peer_list, additive_shares):
-            if peer_addr != addr_message:
-                socket.send(peer_addr, share)
-            else:
-                collected_shares.append(share)
-
-        if addr_message in peer_list[:AGGREGATE_ACTORS]:
-            while len(collected_shares) < len(peer_list):
-                collected_shares.append(model_queue.get())
-
-            share_aggregate = aggregate_shares(collected_shares)
-
-            print('Step 1 finished')
-
-            collected_shares = []
-            for peer_addr in peer_list[:AGGREGATE_ACTORS]:
-                if peer_addr != addr_message:
-                    socket.send(peer_addr, share_aggregate)
-                else:
-                    collected_shares.append(share_aggregate)
-
-            while len(collected_shares) < AGGREGATE_ACTORS:
-                collected_shares.append(model_queue.get())
-
-            final_aggregate = aggregate_shares(collected_shares)
-
-            print('Final aggregate calculated')
-
-            aggregated_model = map_dict(
-                lambda arr: arr // len(peer_list),
-                final_aggregate
-            )
-
-            print('Aggregation done successfuly!')
-
-            print('Sending non-aggregating actors the model')
-            if addr_message == peer_list[0]:
-                for peer_addr in peer_list[AGGREGATE_ACTORS:]:
-                    socket.send(peer_addr, aggregated_model)
-        else:
-            aggregated_model = model_queue.get()
-
-        new_state_dict = convert_numpy_state_dict_to_torch(
-            map_dict(
-                lambda arr: convert_to_float_array(arr, DIGITS_TO_KEEP),
-                aggregated_model
-            )
-        )
+        new_state_dict = aggregator.aggregate(model.state_dict())
         model.load_state_dict(new_state_dict)
         print('Loading the averaged model')
 
         print("\nTest result after averaging:")
         test(model, device, test_loader)
+
 
 def parse_args():
     # Step 1:
@@ -203,29 +143,15 @@ def main(args):
     optimizer = optim.Adadelta(model.parameters(), lr=args.lr)
 
     train_set, test_set = data.load_data(args.num, args.total)
-    train_idx = list(range(0, len(train_set), 25))
+    train_idx = list(range(0, len(train_set), 5))
     trainset = torch.utils.data.Subset(train_set, train_idx)
     train_loader = torch.utils.data.DataLoader(trainset, **train_kwargs)
     test_loader = torch.utils.data.DataLoader(test_set, **test_kwargs)
 
-    # Step 3:
-    # Run the training process and message-receiving process at the same time.
-    # Use a queue to store received model messages.
-    print("----------- Training and messaging started ----------- ")
-    model_queue = Queue()
-
-    def on_message_callback(addr, message):
-        if args.debug:
-            print(f'Received message from {addr}')
-        print(message)
-        model_queue.put(message)
-
-    s = ZMQDirectSocket(addr_message, debug_mode=args.debug)
-    s.start(on_message_callback)
+    server_address = 'tcp://' + args.server
 
     train_and_send(args, model, device, train_loader, test_loader,
-            optimizer, model_queue, addr_message, s)
-    s.stop()
+            optimizer, addr_message, server_address)
 
 
 if __name__ == '__main__':

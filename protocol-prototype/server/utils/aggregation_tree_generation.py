@@ -23,6 +23,7 @@ def partition_sizes(set_size, subset_size, min_subset_size = 3):
 def generate_aggregation_tree(participants, size, num_actors):
     current_level_participants = participants
     aggregation_tree = AggregationTree()
+    next_id = 0
     level = 0
     more_levels = True
     participation_group_dict = {
@@ -47,7 +48,8 @@ def generate_aggregation_tree(participants, size, num_actors):
             next_level_participants.extend(group_actors)
             # Create group
             is_root = len(partitions) == 1
-            aggregation_group = AggregationGroup(level, is_root)
+            aggregation_group = AggregationGroup(next_id, level, is_root)
+            next_id += 1
             aggregation_group.aggregation_actors = group_actors
             aggregation_group.participating_nodes = group_participants
             aggregation_tree.groups.append(aggregation_group)
