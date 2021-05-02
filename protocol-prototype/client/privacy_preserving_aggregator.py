@@ -41,10 +41,10 @@ def prepare_state_dict_and_create_shares(state_dict, num_shares):
     numpy_state_dict = convert_state_dict_to_numpy(state_dict)
     share_state_dictionaries = [{} for _ in range(num_shares)]
     for layer_name, layer_data in numpy_state_dict.items():
-        shares = create_additive_shares(layer_data, num_shares)
+        layer_data_int = convert_to_int_array(layer_data, DIGITS_TO_KEEP)
+        shares = create_additive_shares(layer_data_int, num_shares)
         for i, share_i in enumerate(shares):
-            share_i_int = convert_to_int_array(share_i, DIGITS_TO_KEEP)
-            share_state_dictionaries[i][layer_name] = share_i_int
+            share_state_dictionaries[i][layer_name] = share_i
     return share_state_dictionaries
 
 

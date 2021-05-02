@@ -7,6 +7,10 @@ import threading
 from multiprocessing import Queue, Process, Value
 from ctypes import c_bool
 
+# To simulate bandwidth
+from pympler.asizeof import asizeof
+SIMULATED_SPEED = 100e+6
+
 class MessageWrapper(object):
     """Message wrapper that includes important additional information
     with the message"""
@@ -119,9 +123,17 @@ class ZMQDirectSocket:
                 dest_address,
                 dill.dumps(message)
             )
+
+            # Bandwidth simulation
+            # message_size = asizeof(wrapped_message)
+            # wait_time = message_size / SIMULATED_SPEED
+            # time.sleep(wait_time)
+
             socket = self.__get_socket(dest_address)
             socket.send_pyobj(wrapped_message, flags=zmq.NOBLOCK)
             if self.__debug:
                 print('Message sent to', dest_address)
-        except:
+        except Exception as e:
             print('Failed to send a message')
+            if self.__debug:
+                print('Reason for failing to send the message:', e)

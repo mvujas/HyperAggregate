@@ -19,15 +19,24 @@ def rand_interval(low, high, shape, sampler_function=np.random.rand):
     return (high - low) * sampler_function(*shape) + low
 
 def create_additive_shares(arr, num_shares):
-    max_val = max(abs(arr.min()), abs(arr.max()))
-    interval_bound = (1 + np.random.rand()) * (max_val + np.random.rand())
-    # generate all shares but last
-    shares = [rand_interval(-interval_bound, interval_bound, arr.shape)
-        for _ in range(num_shares - 1)]
-    # calculate last share as sum of generated shares subtracted from the
-    #   original array
-    last_share = arr - np.sum(shares, axis=0)
-    shares.append(last_share)
+    """Create additive shares out of the passed int64 array"""
+    remaining_arr = arr
+    # iinfo returns bounds for the given type
+    # TODO: Create config files and put int format there and retrieve it
+    #   when needed
+    ii64 = np.iinfo(np.int64)
+    shares = []
+    for i in range(num_shares):
+        if i == num_shares - 1:
+            share = remaining_arr
+        else:
+            share = np.random.randint(
+                ii64.min,
+                ii64.max,
+                size=arr.shape,
+                dtype=np.int64)
+        remaining_arr = remaining_arr - share
+        shares.append(share)
     return shares
 
 def reconstruct_additive_secretsharing_result(shares):

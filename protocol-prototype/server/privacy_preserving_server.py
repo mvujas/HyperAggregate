@@ -7,7 +7,7 @@ from netutils.message import Message, MessageType
 from utils.aggregation_tree_generation import generate_aggregation_tree
 from shared.responsive_message_router import ResponsiveMessageRouter
 
-TARGET_SIZE = 9
+TARGET_SIZE = 12
 
 class SchedulingServer(ResponsiveMessageRouter):
     def __init__(self, port, group_size, num_actors, debug_mode=False):

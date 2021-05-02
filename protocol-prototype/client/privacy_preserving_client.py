@@ -13,6 +13,8 @@ import json
 import pickle
 import zmq
 import time
+import random
+import timeit
 from queue import Queue
 
 from utils.mlutils import train_epoch, test
@@ -33,37 +35,11 @@ sys.path.insert(0, parent_dir)
 from netutils.zmqsockets import ZMQDirectSocket
 from netutils.message import *
 
-DIGITS_TO_KEEP = 6
+BENCHMARK_SERVER_ADDRESS = 'tcp://127.0.0.1:83420'
 
-
-def prepare_state_dict_and_create_shares(state_dict, num_shares):
-    numpy_state_dict = convert_state_dict_to_numpy(state_dict)
-    share_state_dictionaries = [{} for _ in range(num_shares)]
-    for layer_name, layer_data in numpy_state_dict.items():
-        shares = create_additive_shares(layer_data, num_shares)
-        for i, share_i in enumerate(shares):
-            share_i_int = convert_to_int_array(share_i, DIGITS_TO_KEEP)
-            share_state_dictionaries[i][layer_name] = share_i_int
-    return share_state_dictionaries
-
-
-def aggregate_shares(shares):
-    assert len(shares) != 0, 'No additive shares'
-    result = {}
-    layer_names = shares[0].keys()
-    for layer_name in layer_names:
-        result[layer_name] = sum(share[layer_name] for share in shares)
-    return result
-
-
-def train_and_send(args, model, device, train_loader, test_loader, optimizer, addr_message, server_address):
-    aggregator = PrivacyPreservingAggregator(addr_message, server_address, False)
+def train_and_send(args, model, device, train_loader, test_loader, optimizer, addr_message):
+    aggregator = PrivacyPreservingAggregator(addr_message, args.server, False)
     aggregator.start()
-    # new_model_dict = aggregator.aggregate(model.state_dict())
-    # model.load_state_dict(new_model_dict)
-    # print('New model loaded')
-
-
     for epoch in range(1, args.epochs + 1):
         print("----------- Epoch", epoch, "starts ----------- ")
         train_epoch(args, model, device, train_loader, optimizer, epoch)
@@ -71,9 +47,16 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, ad
         test(model, device, test_loader)
         print("----------- Epoch", epoch, "finished ----------- ")
 
+        start_time = timeit.default_timer()
         new_state_dict = aggregator.aggregate(model.state_dict())
+        end_time = timeit.default_timer()
+        time_elapsed = end_time - start_time
+
         model.load_state_dict(new_state_dict)
-        print('Loading the averaged model')
+        print(f'Loading the averaged model, time elapsed: {time_elapsed}')
+
+        if BENCHMARK_SERVER_ADDRESS is not None:
+            aggregator.send(BENCHMARK_SERVER_ADDRESS, time_elapsed)
 
         print("\nTest result after averaging:")
         test(model, device, test_loader)
@@ -123,6 +106,7 @@ def main(args):
     # Prepare configuration
     use_cuda = not args.no_cuda and torch.cuda.is_available()
     torch.manual_seed(args.seed)
+    random.seed(args.seed)
     device = torch.device("cuda" if use_cuda else "cpu")
     train_kwargs = {'batch_size': args.batch_size}
     test_kwargs = {'batch_size': args.test_batch_size}
@@ -143,15 +127,15 @@ def main(args):
     optimizer = optim.Adadelta(model.parameters(), lr=args.lr)
 
     train_set, test_set = data.load_data(args.num, args.total)
-    train_idx = list(range(0, len(train_set), 5))
+    train_idx = list(range(0, len(train_set), 25))
     trainset = torch.utils.data.Subset(train_set, train_idx)
     train_loader = torch.utils.data.DataLoader(trainset, **train_kwargs)
     test_loader = torch.utils.data.DataLoader(test_set, **test_kwargs)
 
-    server_address = 'tcp://' + args.server
+    args.server = f'tcp://{args.server}'
 
     train_and_send(args, model, device, train_loader, test_loader,
-            optimizer, addr_message, server_address)
+            optimizer, addr_message)
 
 
 if __name__ == '__main__':
