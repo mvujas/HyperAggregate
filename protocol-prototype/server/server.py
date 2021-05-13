@@ -10,7 +10,7 @@ def parse_args():
 
 
 def main(args):
-    server = SchedulingServer(args.port, group_size=12, num_actors=12, debug_mode=True)
+    server = SchedulingServer(args.port, group_size=3, num_actors=2, debug_mode=True)
     server.start()
 
 

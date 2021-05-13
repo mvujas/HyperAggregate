@@ -18,11 +18,6 @@ import timeit
 from queue import Queue
 
 from utils.mlutils import train_epoch, test
-from utils.secret_sharing import create_additive_shares
-from utils.numberutils import convert_to_int_array, convert_to_float_array
-from utils.torchutils import convert_state_dict_to_numpy, \
-    convert_numpy_state_dict_to_torch
-from utils.dictutils import map_dict
 
 from privacy_preserving_aggregator import PrivacyPreservingAggregator
 
