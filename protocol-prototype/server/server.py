@@ -1,5 +1,7 @@
 import argparse
 from privacy_preserving_server import SchedulingServer
+from aggregation_profiles.impl.additive_sharing_model_profile import \
+    AdditiveSharingModelProfile
 
 def parse_args():
     parser = argparse.ArgumentParser(description='DeAI privacy preserving server')
@@ -10,7 +12,11 @@ def parse_args():
 
 
 def main(args):
-    server = SchedulingServer(args.port, group_size=3, num_actors=2, debug_mode=True)
+    DIGITS_TO_KEEP = 6
+    agg_profile = AdditiveSharingModelProfile(DIGITS_TO_KEEP)
+    server = SchedulingServer(
+        args.port, group_size=3, num_actors=2,
+        aggregation_profile=agg_profile, debug_mode=True)
     server.start()
 
 

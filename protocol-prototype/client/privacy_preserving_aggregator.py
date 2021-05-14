@@ -10,9 +10,6 @@ from threading import Lock, Condition
 from utils.aggregation_model_queue import AggregationModelQueue
 from utils.partial_model_message import PartialModelMessage
 
-from aggregation_profiles.impl.additive_sharing_model_profile import \
-    AdditiveSharingModelProfile
-
 import random
 
 from enum import Enum
@@ -44,7 +41,7 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
         self.__wait_model = Condition()
         self.__aggregation_group_list = None
         self.__num_nodes = None
-        self.__aggregation_profile = AdditiveSharingModelProfile(DIGITS_TO_KEEP)
+        self.__aggregation_profile = None
 
     def register_callbacks(self):
         """Assigns proper callbacks to corresponding messages"""
@@ -96,7 +93,7 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
             if self.__state == ClientState.WAITING_JOB:
                 if self.debug:
                     print('Received assigned aggregation tree jobs')
-                self.__num_nodes, group_list = message
+                self.__num_nodes, group_list, self.__aggregation_profile = message
                 self.__aggregation_group_list = sorted(
                     group_list, key=lambda group: group.level)
                 self.__create_aggregation_model_queues(self.__aggregation_group_list)

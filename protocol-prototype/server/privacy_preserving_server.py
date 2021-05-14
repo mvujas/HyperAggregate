@@ -10,12 +10,15 @@ from shared.responsive_message_router import ResponsiveMessageRouter
 TARGET_SIZE = 6
 
 class SchedulingServer(ResponsiveMessageRouter):
-    def __init__(self, port, group_size, num_actors, debug_mode=False):
+    def __init__(self, port, group_size,
+            num_actors, aggregation_profile, debug_mode=False):
         address = f'tcp://*:{port}'
         super().__init__(address, debug_mode=debug_mode)
         self.__aggregation_queue = set()
         self.__group_size = group_size
         self.__num_actors = num_actors
+        # The server supplies aggregation logic to clients
+        self.__aggregation_profile = aggregation_profile
 
     def register_callbacks(self):
         result = super().register_callbacks()
@@ -42,5 +45,9 @@ class SchedulingServer(ResponsiveMessageRouter):
         for node_addr, node_groups in aggregation_pointer_dict.items():
             self.send(
                 node_addr,
-                Message(MessageType.GROUP_ASSIGNMENT, (num_nodes, node_groups)))
+                Message(MessageType.GROUP_ASSIGNMENT, (
+                    num_nodes,
+                    node_groups,
+                    self.__aggregation_profile
+                )))
         self.__aggregation_queue = set()
