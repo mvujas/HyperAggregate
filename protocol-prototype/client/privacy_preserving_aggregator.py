@@ -6,6 +6,9 @@ from .utils.aggregation_model_queue import AggregationModelQueue
 from .utils.partial_model_message import PartialModelMessage
 
 import random
+# import gc
+
+import timeit
 
 from enum import Enum
 
@@ -34,6 +37,16 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
         self.__aggregation_group_list = None
         self.__num_nodes = None
         self.__aggregation_profile = None
+        self.time_elapsed = None
+
+        # Actors that should send ME model
+        self.__actors_to_send_list = None
+        # Participants I am responsible for to send model
+        self.__participants_to_receive_list = None
+        # Participants that I am responsible for, but notified ME that they
+        #   received the model
+        self.__participants_that_dont_need_model_lock = Lock()
+        self.__participants_that_dont_need_model = None
 
     def register_callbacks(self):
         """Assigns proper callbacks to corresponding messages"""
@@ -45,7 +58,9 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
                 lambda address, payload: self.__handle_group_assignment(payload),
             MessageType.PARTIAL_MODEL_SHARE: self.__handle_partial_model,
             MessageType.FINAL_PARTIAL_SHARES: self.__handle_final_shares,
-            MessageType.MODEL_UPDATE: self.__handle_model_update
+            MessageType.MODEL_UPDATE: self.__handle_model_update,
+            MessageType.NO_MODEL_NEEDED:
+                lambda address, payload: self.__handle_no_model_needed(address)
         })
         return result
 
@@ -54,17 +69,25 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
         self.send(self.__server_address, message)
 
     def aggregate(self, model):
-        """Signs up for aggregation and wait for it to start"""
+        """Signs up for aggregation and wait for it to start.
+        Returns model and time taken for aggreg"""
         with self.__state_lock:
             if self.__state != ClientState.NO_JOB:
                 raise ValueError('The client is already taking part in aggregation')
             self.__state = ClientState.WAITING_SIGNUP_CONFIRMATION
             self.__resulting_model = None
+            self.__participants_that_dont_need_model = set()
+            self.__actors_to_send_list = []
+            self.__participants_to_receive_list = []
             self.__send_to_server(Message(MessageType.AGGREGATION_SIGNUP))
         with self.__wait_aggregation:
             self.__wait_aggregation.wait()
 
-        return self.__do_aggregation(self.__aggregation_group_list, model)
+        start_time = timeit.default_timer()
+        aggregated_model = self.__do_aggregation(self.__aggregation_group_list, model)
+        end_time = timeit.default_timer()
+        self.time_elapsed = end_time - start_time
+        return aggregated_model
 
     def __handle_signup_confirmation(self, message):
         """Sets proper state on signup confirmation"""
@@ -125,6 +148,7 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
                 )))
             else:
                 self.__aggregation_model_queues[group_id].add(self.address, model_share)
+            # In future ideally program would be forced to free memory of the share
 
     def __organize_groups_by_level_jobs(self, group_list):
         """Organize group list for easy access with elements on each index
@@ -181,12 +205,18 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
 
         level_jobs = self.__organize_groups_by_level_jobs(group_list)
         for participant_group, actor_group in level_jobs:
-            print(actor_group)
+            # print(actor_group)
+
+            # Actors on top of tree are likely to send ME the model first,
+            #   so I should notify them as soon as possible
+            self.__actors_to_send_list = participant_group.aggregation_actors +\
+                self.__actors_to_send_list
 
             assert participant_group is not None, 'Node must be participant at each level it is on'
             self.__send_model_to_actors(participant_group, current_model)
 
             if actor_group is not None:
+                self.__participants_to_receive_list += actor_group.participating_nodes
                 groups_to_update.insert(0, actor_group)
                 last_actor_group = actor_group
                 current_model = self.__aggregate_shares_received_for_group(actor_group.id)
@@ -211,21 +241,33 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
                     'final'
                 )
 
-                self.__resulting_model = {
+                averaged_model = {
                     k: arr // self.__num_nodes \
                     for k, arr in final_model_sum.items()
                 }
+
+                self.__set_model(averaged_model)
         else:
             with self.__wait_model:
                 self.__wait_model.wait()
 
 
         for group in groups_to_update:
-            for participant in group.participating_nodes:
-                if participant != self.address:
+            # Order list so don't all actors start on same node in the group
+            my_index = group.aggregation_actors.index(self.address)
+            group_actors_num = len(group.aggregation_actors)
+            participants = list(set(group.participating_nodes).difference(group.aggregation_actors))
+            group_participants_num = len(participants)
+            split_index = my_index * (group_participants_num // group_actors_num)
+            ordered_participant_list = participants[split_index:] +\
+                participants[:split_index]
+
+            # Send model to participants that haven't already received it
+            for participant in ordered_participant_list:
+                if participant != self.address and \
+                        participant not in self.__participants_that_dont_need_model:
                     self.send(participant, Message(
                         MessageType.MODEL_UPDATE, self.__resulting_model))
-
         self.__resulting_model = self.__aggregation_profile.unprepare(
             self.__resulting_model
         )
@@ -270,10 +312,21 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
             address,
             partial_model.model)
 
-    def __handle_model_update(self, address, model):
+    def __handle_no_model_needed(self, address):
+        """Puts given address in list of addresses that doesn't need to model"""
+        with self.__participants_that_dont_need_model_lock:
+            self.__participants_that_dont_need_model.add(address)
+
+    def __set_model(self, model):
         """Updates model and wakes up threads waiting for it"""
+        self.__resulting_model = model
+        for actor in self.__actors_to_send_list:
+            self.send(actor, Message(MessageType.NO_MODEL_NEEDED))
+        with self.__wait_model:
+            self.__wait_model.notifyAll()
+
+    def __handle_model_update(self, address, model):
+        """Handles receipt of model"""
         with self.__resulting_model_lock:
             if self.__resulting_model is None:
-                self.__resulting_model = model
-                with self.__wait_model:
-                    self.__wait_model.notifyAll()
+                self.__set_model(model)

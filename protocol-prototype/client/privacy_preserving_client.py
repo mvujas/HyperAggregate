@@ -30,16 +30,15 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, ad
     aggregator = PrivacyPreservingAggregator(addr_message, args.server, False)
     aggregator.start()
     for epoch in range(1, args.epochs + 1):
-        print("----------- Epoch", epoch, "starts ----------- ")
-        train_epoch(args, model, device, train_loader, optimizer, epoch)
-        print("\nTest result before averaging:")
-        test(model, device, test_loader)
-        print("----------- Epoch", epoch, "finished ----------- ")
+        # print("----------- Epoch", epoch, "starts ----------- ")
+        # train_epoch(args, model, device, train_loader, optimizer, epoch)
+        # print("\nTest result before averaging:")
+        # test(model, device, test_loader)
+        # print("----------- Epoch", epoch, "finished ----------- ")
 
-        start_time = timeit.default_timer()
+
         new_state_dict = aggregator.aggregate(model.state_dict())
-        end_time = timeit.default_timer()
-        time_elapsed = end_time - start_time
+        time_elapsed = aggregator.time_elapsed
 
         model.load_state_dict(new_state_dict)
         print(f'Loading the averaged model, time elapsed: {time_elapsed}')
@@ -47,9 +46,11 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, ad
         if args.benchmark_server is not None:
             aggregator.send(args.benchmark_server, time_elapsed)
 
-        print("\nTest result after averaging:")
-        test(model, device, test_loader)
-    print('Training over' + args.epochs)
+        # print("\nTest result after averaging:")
+        # test(model, device, test_loader)
+    print('Training over', args.epochs)
+    # Prematurely closing it may cause some client not to recieve the model
+    time.sleep(5)
     aggregator.stop()
 
 

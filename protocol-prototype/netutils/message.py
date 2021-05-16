@@ -8,7 +8,8 @@ class MessageType(Enum):
     GROUP_ASSIGNMENT, \
     PARTIAL_MODEL_SHARE, \
     FINAL_PARTIAL_SHARES, \
-    MODEL_UPDATE = range(8)
+    MODEL_UPDATE, \
+    NO_MODEL_NEEDED = range(9)
 
 
 class Message(object):
