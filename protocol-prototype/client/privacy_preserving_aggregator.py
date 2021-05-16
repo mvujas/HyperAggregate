@@ -1,23 +1,15 @@
-import os,sys,inspect
-current_dir = os.path.dirname(
-    os.path.abspath(inspect.getfile(inspect.currentframe())))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir)
 from netutils.message import Message, MessageType
 from shared.responsive_message_router import ResponsiveMessageRouter
 from threading import Lock, Condition
 
-from utils.aggregation_model_queue import AggregationModelQueue
-from utils.partial_model_message import PartialModelMessage
+from .utils.aggregation_model_queue import AggregationModelQueue
+from .utils.partial_model_message import PartialModelMessage
 
 import random
 
 from enum import Enum
 
 from queue import Empty
-
-
-DIGITS_TO_KEEP = 6
 
 
 class ClientState(Enum):

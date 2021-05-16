@@ -1,5 +1,5 @@
-import data
-import network_model
+from .data import load_data
+from .network_model import Net
 
 import argparse
 import torch
@@ -17,15 +17,9 @@ import random
 import timeit
 from queue import Queue
 
-from utils.mlutils import train_epoch, test
+from .utils.mlutils import train_epoch, test
 
-from privacy_preserving_aggregator import PrivacyPreservingAggregator
-
-import os,sys,inspect
-current_dir = os.path.dirname(
-    os.path.abspath(inspect.getfile(inspect.currentframe())))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir)
+from .privacy_preserving_aggregator import PrivacyPreservingAggregator
 
 from netutils.zmqsockets import ZMQDirectSocket
 from netutils.message import *
@@ -50,11 +44,13 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, ad
         model.load_state_dict(new_state_dict)
         print(f'Loading the averaged model, time elapsed: {time_elapsed}')
 
-        if BENCHMARK_SERVER_ADDRESS is not None:
-            aggregator.send(BENCHMARK_SERVER_ADDRESS, time_elapsed)
+        if args.benchmark_server is not None:
+            aggregator.send(args.benchmark_server, time_elapsed)
 
         print("\nTest result after averaging:")
         test(model, device, test_loader)
+    print('Training over' + args.epochs)
+    aggregator.stop()
 
 
 def parse_args():
@@ -90,6 +86,11 @@ def parse_args():
                         help='The client address (default: 127.0.0.1:6000)')
     parser.add_argument('--server', default='127.0.0.1:5555', metavar='N',
                         help='The server address (default: 127.0.0.1:5555)')
+    parser.add_argument('--benchmark-server', default=None, type=int,
+                        help='The benchmark server address')
+    parser.add_argument('--data-skip', type=int, default=25,
+                        help='Indicates the program to use only every n-th data '\
+                            'sample for training (default: 25)')
     parser.add_argument('--debug', default=False,
                         action='store_true',
                         help='Activate debug mode.')
@@ -118,16 +119,18 @@ def main(args):
     # Step 2:
     # Initialize the network model and dataset.
     print("Initializing the network model and dataset...")
-    model = network_model.Net().to(device)
+    model = Net().to(device)
     optimizer = optim.Adadelta(model.parameters(), lr=args.lr)
 
-    train_set, test_set = data.load_data(args.num, args.total)
-    train_idx = list(range(0, len(train_set), 25))
+    train_set, test_set = load_data(args.num, args.total)
+    train_idx = list(range(0, len(train_set), args.data_skip))
     trainset = torch.utils.data.Subset(train_set, train_idx)
     train_loader = torch.utils.data.DataLoader(trainset, **train_kwargs)
     test_loader = torch.utils.data.DataLoader(test_set, **test_kwargs)
 
     args.server = f'tcp://{args.server}'
+    if args.benchmark_server is not None:
+        args.benchmark_server = f'tcp://{args.benchmark_server}'
 
     train_and_send(args, model, device, train_loader, test_loader,
             optimizer, addr_message)

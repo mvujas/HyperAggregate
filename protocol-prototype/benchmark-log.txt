@@ -1,0 +1,4 @@
+Running average after 1 times: 8.326059809012804
+Running average after 2 times: 6.674861232517287
+Running average after 3 times: 4.970091986993793
+Running average after 4 times: 4.701058827995439

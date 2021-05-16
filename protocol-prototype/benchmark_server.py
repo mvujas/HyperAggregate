@@ -15,7 +15,10 @@ def main(args):
     time_arr = []
     def callback(address, message, arr):
         arr.append(message)
-        print(f'Running average after {len(arr)} times: {avg(arr)}')
+        txt = f'Running average after {len(arr)} times: {avg(arr)}'
+        print(txt)
+        with open('benchmark-log.txt', 'a') as f:
+            print(txt, file=f)
     address = f'tcp://*:{args.port}'
     socket = ZMQDirectSocket(address, False)
     socket.start(lambda addr, msg: callback(addr, msg, time_arr))
