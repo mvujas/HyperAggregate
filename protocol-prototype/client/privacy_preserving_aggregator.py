@@ -199,85 +199,90 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
         """Perform secure aggregation with other nodes signed up for it
         over network
         """
-        groups_to_update = []
-        current_model = self.__aggregation_profile.prepare(model)
-        last_actor_group = None
-
-        level_jobs = self.__organize_groups_by_level_jobs(group_list)
-        for participant_group, actor_group in level_jobs:
-            # print(actor_group)
-
-            # Actors on top of tree are likely to send ME the model first,
-            #   so I should notify them as soon as possible
-            self.__actors_to_send_list = participant_group.aggregation_actors +\
-                self.__actors_to_send_list
-
-            assert participant_group is not None, 'Node must be participant at each level it is on'
-            self.__send_model_to_actors(participant_group, current_model)
-
-            if actor_group is not None:
-                self.__participants_to_receive_list += actor_group.participating_nodes
-                groups_to_update.insert(0, actor_group)
-                last_actor_group = actor_group
-                current_model = self.__aggregate_shares_received_for_group(actor_group.id)
-
-
-        if last_actor_group is not None and last_actor_group.is_root_level:
-            with self.__resulting_model_lock:
-                final_partial_shares = []
-                root_group = last_actor_group
-                group_id = root_group.id
-
-                for actor in root_group.aggregation_actors:
-                    if actor != self.address:
-                        self.send(actor, Message(MessageType.FINAL_PARTIAL_SHARES, PartialModelMessage(
-                            group_id, current_model
-                        )))
-                    else:
-                        self.__aggregation_model_queues['final'].add(self.address, current_model)
-
-
-                final_model_sum = self.__aggregate_shares_received_for_group(
-                    'final'
-                )
-
-                averaged_model = {
-                    k: arr // self.__num_nodes \
-                    for k, arr in final_model_sum.items()
-                }
-
-                self.__set_model(averaged_model)
-        else:
-            with self.__wait_model:
-                self.__wait_model.wait()
-
-
-        for group in groups_to_update:
-            # Order list so don't all actors start on same node in the group
-            my_index = group.aggregation_actors.index(self.address)
-            group_actors_num = len(group.aggregation_actors)
-            participants = list(set(group.participating_nodes).difference(group.aggregation_actors))
-            group_participants_num = len(participants)
-            split_index = my_index * (group_participants_num // group_actors_num)
-            ordered_participant_list = participants[split_index:] +\
-                participants[:split_index]
-
-            # Send model to participants that haven't already received it
-            for participant in ordered_participant_list:
-                if participant != self.address and \
-                        participant not in self.__participants_that_dont_need_model:
-                    self.send(participant, Message(
-                        MessageType.MODEL_UPDATE, self.__resulting_model))
-        self.__resulting_model = self.__aggregation_profile.unprepare(
-            self.__resulting_model
-        )
         try:
-            return self.__resulting_model
-        finally:
-            self.__num_nodes = None
-            self.__resulting_model = None
-            with self.__state_lock:
-                self.__state = ClientState.NO_JOB
+            groups_to_update = []
+            current_model = self.__aggregation_profile.prepare(model)
+            last_actor_group = None
+
+            level_jobs = self.__organize_groups_by_level_jobs(group_list)
+            for participant_group, actor_group in level_jobs:
+                # print(actor_group)
+
+                # Actors on top of tree are likely to send ME the model first,
+                #   so I should notify them as soon as possible
+                self.__actors_to_send_list = participant_group.aggregation_actors +\
+                    self.__actors_to_send_list
+
+                assert participant_group is not None, 'Node must be participant at each level it is on'
+                self.__send_model_to_actors(participant_group, current_model)
+
+                if actor_group is not None:
+                    self.__participants_to_receive_list += actor_group.participating_nodes
+                    groups_to_update.insert(0, actor_group)
+                    last_actor_group = actor_group
+                    current_model = self.__aggregate_shares_received_for_group(actor_group.id)
+
+
+            if last_actor_group is not None and last_actor_group.is_root_level:
+                with self.__resulting_model_lock:
+                    final_partial_shares = []
+                    root_group = last_actor_group
+                    group_id = root_group.id
+
+                    for actor in root_group.aggregation_actors:
+                        if actor != self.address:
+                            self.send(actor, Message(MessageType.FINAL_PARTIAL_SHARES, PartialModelMessage(
+                                group_id, current_model
+                            )))
+                        else:
+                            self.__aggregation_model_queues['final'].add(self.address, current_model)
+
+
+                    final_model_sum = self.__aggregate_shares_received_for_group(
+                        'final'
+                    )
+
+                    averaged_model = {
+                        k: arr // self.__num_nodes \
+                        for k, arr in final_model_sum.items()
+                    }
+
+                    self.__set_model(averaged_model)
+            else:
+                print('Waiting model', self.address)
+                with self.__wait_model:
+                    self.__wait_model.wait()
+                print('Got model', self.address)
+
+
+            for group in groups_to_update:
+                # Order list so don't all actors start on same node in the group
+                my_index = group.aggregation_actors.index(self.address)
+                group_actors_num = len(group.aggregation_actors)
+                participants = list(set(group.participating_nodes).difference(group.aggregation_actors))
+                group_participants_num = len(participants)
+                split_index = my_index * (group_participants_num // group_actors_num)
+                ordered_participant_list = participants[split_index:] +\
+                    participants[:split_index]
+
+                # Send model to participants that haven't already received it
+                for participant in ordered_participant_list:
+                    if participant != self.address and \
+                            participant not in self.__participants_that_dont_need_model:
+                        self.send(participant, Message(
+                            MessageType.MODEL_UPDATE, self.__resulting_model))
+            self.__resulting_model = self.__aggregation_profile.unprepare(
+                self.__resulting_model
+            )
+            try:
+                return self.__resulting_model
+            finally:
+                self.__num_nodes = None
+                self.__resulting_model = None
+                with self.__state_lock:
+                    self.__state = ClientState.NO_JOB
+        except Exception as e:
+            print(e)
 
     def __create_aggregation_model_queues(self, group_list):
         """Prepares model queues for models to go into them when received"""

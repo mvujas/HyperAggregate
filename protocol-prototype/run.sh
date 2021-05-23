@@ -31,4 +31,4 @@
 #       --epochs $NUM_EPOCHS $DEBUG_SEQ; read line"
 # done
 
-python runtest.py --debug --server-port 9003 --client-start-port 3001 --data-skip 200 --server-target-size 12 --epochs 3 --server-group-size 4 --server-num-actors 2 --total 12
+python runtest.py --server-port 9006 --client-start-port 3011 --data-skip 200 --server-target-size 50 --epochs 3 --server-group-size 3 --server-num-actors 2 --total 50

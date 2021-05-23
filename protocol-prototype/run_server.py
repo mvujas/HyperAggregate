@@ -1,5 +1,5 @@
 import argparse
-from .privacy_preserving_server import SchedulingServer
+from server.privacy_preserving_server import SchedulingServer
 from aggregation_profiles.impl.additive_sharing_model_profile import \
     AdditiveSharingModelProfile
 

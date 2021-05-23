@@ -44,4 +44,4 @@ def convert_to_float_array(arr, decimals_included):
         Number of decimals included in int representation of array
     """
     base = 10 ** decimals_included
-    return arr / base
+    return (arr / base).astype(np.float32)
