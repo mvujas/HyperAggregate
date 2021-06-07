@@ -9,7 +9,7 @@ import random
 from shared.aggregation_tree import AggregationGroup, AggregationTree
 
 def partition_sizes(set_size, subset_size, min_subset_size = 3):
-    print(subset_size, min_subset_size)
+    # print(subset_size, min_subset_size)
     assert subset_size >= min_subset_size, 'Set size must be bigger than minimum subset size'
     result = [subset_size] * (set_size // subset_size)
     last_subset_size = set_size % subset_size
@@ -38,13 +38,13 @@ def generate_aggregation_tree(participants, size, num_actors):
 
         min_index = 0
         partitions = partition_sizes(len(current_level_participants), size)
-        print('Partitions:', partitions)
+        # print('Partitions:', partitions)
         for group_size in partitions:
             # Choose participants and aggregation actors
             group_participants =    \
                 current_level_participants[min_index:min_index + group_size]
             min_index += group_size
-            print(actors_set, len(actors_set), num_actors)
+            # print(actors_set, len(actors_set), num_actors)
             group_actors = random.sample(actors_set, num_actors)
             actors_set.difference_update(group_actors)
             # Actors take part in next level aggregation

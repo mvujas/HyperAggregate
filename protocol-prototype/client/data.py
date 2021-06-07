@@ -2,8 +2,18 @@ import torch
 from torchvision import datasets, transforms
 
 
-# Load a fraction of dataset for training
 def load_data(num, total):
+    """Loads a fraction of dataset for the given peer
+
+    :param num: The index of the peer
+    :type num: int
+
+    :param total: Total number of peers
+    :type total: int
+
+    :return: Training and test data loader
+    :rtype: tuple[torch.utils.data.DataLoader, torch.utils.data.DataLoader]
+    """
     transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,))

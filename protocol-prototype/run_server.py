@@ -24,7 +24,7 @@ def main(args):
     server = SchedulingServer(
         args.port, target_size=args.target_size, group_size=args.group_size,
         num_actors=args.num_actors, aggregation_profile=agg_profile,
-        debug_mode=True)
+        debug_mode=False)
     server.start()
 
 

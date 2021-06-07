@@ -1,6 +1,6 @@
 from multiprocessing import Process
 from recordtype import recordtype
-from server import server
+import run_server as server
 from client import privacy_preserving_client
 import benchmark_server
 
@@ -65,7 +65,7 @@ def main(args):
         'server': f'127.0.0.1:{args.server_port}',
         'data_skip': args.data_skip,
         'benchmark_server': f'127.0.0.1:{args.benchmark_server_port}',
-        'debug': args.debug
+        'debug': False#args.debug
     }
     server_args = recordtype("ServerArgs", server_args.keys())(*server_args.values())
     benchamrk_server_args = recordtype("BenchmarkServerArgs", benchamrk_server_args.keys())(*benchamrk_server_args.values())
@@ -82,6 +82,8 @@ def main(args):
     for i in range(args.total):
         port = args.client_start_port + i * args.client_port_dif
         client_args.client = f'127.0.0.1:{port}'
+        client_args.num = i
+        client_args.total = args.total
         client_processes.append(
             Process(target=privacy_preserving_client.main, args=(client_args,))
         )

@@ -24,17 +24,26 @@ from .privacy_preserving_aggregator import PrivacyPreservingAggregator
 from netutils.zmqsockets import ZMQDirectSocket
 from netutils.message import *
 
-BENCHMARK_SERVER_ADDRESS = 'tcp://127.0.0.1:83420'
+# BENCHMARK_SERVER_ADDRESS = 'tcp://127.0.0.1:83420'
+# ACCURACY_THRESHOLD = 90
 
 def train_and_send(args, model, device, train_loader, test_loader, optimizer, addr_message):
+    # reached_milestone = False
+
     aggregator = PrivacyPreservingAggregator(addr_message, args.server, False)
     aggregator.start()
+    # start_time = timeit.default_timer()
+    accuracies_to_achieve = [0.6, .7, .8, .9, .95, .97]
+    achieved = [
+        False
+        for acc in accuracies_to_achieve
+    ]
     for epoch in range(1, args.epochs + 1):
-        # print("----------- Epoch", epoch, "starts ----------- ")
-        # train_epoch(args, model, device, train_loader, optimizer, epoch)
+        print("----------- Epoch", epoch, "starts ----------- ")
+        train_epoch(args, model, device, train_loader, optimizer, epoch)
         # print("\nTest result before averaging:")
         # test(model, device, test_loader)
-        # print("----------- Epoch", epoch, "finished ----------- ")
+        print("----------- Epoch", epoch, "finished ----------- ")
 
 
         new_state_dict = aggregator.aggregate(model.state_dict())
@@ -43,11 +52,28 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, ad
         model.load_state_dict(new_state_dict)
         print(f'Loading the averaged model, time elapsed: {time_elapsed}')
 
-        if args.benchmark_server is not None:
-            aggregator.send(args.benchmark_server, time_elapsed)
+        print("\nTest result after averaging:")
+        loss, accuracy = test(model, device, test_loader)
 
-        # print("\nTest result after averaging:")
-        # test(model, device, test_loader)
+        if args.benchmark_server is not None:
+            aggregator.send(args.benchmark_server, ('time-only', time_elapsed))
+
+            # print('Accuracy')
+            for i, acc in enumerate(accuracies_to_achieve):
+                # print(f'Checking {acc}')
+                if not achieved[i] and accuracy / 100 >= acc:
+                    achieved[i] = True
+                    # print(f'Accuracy {acc} achieved')
+                    aggregator.send(args.benchmark_server, (f'achieved-{acc}', epoch))
+
+
+
+        # if not reached_milestone and accuracy >= ACCURACY_THRESHOLD:
+        #     end_time = timeit.default_timer()
+        #     time_elapsed = end_time - start_time
+        #     if args.benchmark_server is not None:
+        #         aggregator.send(args.benchmark_server, time_elapsed)
+        #     reached_milestone = True
     print('Training over', args.epochs)
     # Prematurely closing it may cause some client not to recieve the model
     time.sleep(5)

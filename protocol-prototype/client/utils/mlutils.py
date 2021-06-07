@@ -3,6 +3,15 @@ import torch
 
 
 def train_epoch(args, model, device, train_loader, optimizer, epoch):
+    """Trains the model
+
+    :param args: Configuration arguments
+    :param model: Model to train
+    :param device: Device on which the model should be trained
+    :param train_loader: Data loader for training data
+    :param optimizer: Optimizer to use for training
+    :param epoch: Number of training epochs
+    """
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
@@ -20,6 +29,15 @@ def train_epoch(args, model, device, train_loader, optimizer, epoch):
 
 
 def test(model, device, test_loader):
+    """Evaluates the loss and accuracy of the model
+
+    :param model: Model to test
+    :param device: Device on which the evaluation should be done
+    :param test_loader: Data loader for test data
+
+    :return: The loss and accuracy of the model on the given data
+    :rtype: tuple[float, float]
+    """
     model.eval()
     test_loss = 0
     correct = 0
@@ -34,7 +52,9 @@ def test(model, device, test_loader):
             correct += pred.eq(target.view_as(pred)).sum().item()
 
     test_loss /= len(test_loader.dataset)
-
+    accuracy = 100. * correct / len(test_loader.dataset)
     print('Test set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
         test_loss, correct, len(test_loader.dataset),
-        100. * correct / len(test_loader.dataset)))
+        accuracy))
+
+    return test_loss, accuracy

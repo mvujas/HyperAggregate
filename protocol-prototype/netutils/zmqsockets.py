@@ -13,7 +13,8 @@ SIMULATED_SPEED = 100e+6
 
 class MessageWrapper(object):
     """Message wrapper that includes important additional information
-    with the message"""
+    with the message (namely sender and destination address)
+    """
     def __init__(self, sender_addr, dest_addr, message):
         self.sender_addr = sender_addr
         self.destination_address = dest_addr
@@ -30,7 +31,9 @@ class MessageWrapper(object):
 
 
 class ZMQDirectSocket:
-    """Abstraction of network communication interface implemented in ZeroMQ"""
+    """Abstraction of peer to peer network communication interface implemented
+    with ZeroMQ
+    """
     def __init__(self, address, debug_mode=False):
         self.__address = address
         self.__debug = debug_mode
@@ -43,12 +46,18 @@ class ZMQDirectSocket:
 
     @property
     def address(self):
-        """Returns the address that socket is running on"""
+        """Returns the address that socket is running on
+
+        :return: Address of the socket
+        :rtype: str
+        """
         return self.__address
 
     def stop(self):
         """Sets running indicator to false which stops the socket from
-        receiving anymore message"""
+        receiving anymore messages (effectively stops message processing
+        thread)
+        """
         self.__running.value = False
         self.__receive_messages_process.join()
         self.__process_messages_thread.join()
@@ -57,7 +66,12 @@ class ZMQDirectSocket:
 
     def start(self, on_message_received_callback):
         """Initliaze process that waits for messages and the thread that
-        processes them and starts them"""
+        processes them and starts them
+
+        :param on_message_received_callback: Function that accepts a sender
+            address and the message payload when a message is received
+        :type on_message_received_callback: function (str, object) => ()
+        """
         if self.__receive_messages_process is None:
             self.__running.value = True
             self.__receive_messages_process = Process(
@@ -88,7 +102,12 @@ class ZMQDirectSocket:
 
     def __process_messages(self, on_message_received_callback):
         """Message processing loop, unwraps messages and calls the callback
-        function with the unwrapped message"""
+        function with the unwrapped message
+
+        :param on_message_received_callback: Function that accepts a sender
+            address and the message payload when a message is received
+        :type on_message_received_callback: function (str, object) => ()
+        """
         while self.__running.value or not self.__message_queue.empty():
             try:
                 message = self.__message_queue.get(False, 0.01)
@@ -116,7 +135,14 @@ class ZMQDirectSocket:
             self.__send_sockets_lock.release()
 
     def send(self, dest_address, message):
-        """Wraps a message and send it to """
+        """Wraps a message and send it to the specified destination
+
+        :param dest_address: An address to send the message to
+        :type dest_address: str
+
+        :param message: The message
+        :type message: object
+        """
         try:
             wrapped_message = MessageWrapper(
                 self.__address,

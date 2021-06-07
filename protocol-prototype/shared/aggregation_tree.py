@@ -1,4 +1,16 @@
 class AggregationGroup:
+    """Class representing aggregation group
+
+    :var id: The identifier of the group (Assumed this value is generated to be
+        unique in a single aggregation tree)
+    :var level: The level of the aggregation tree at which the group appears
+    :var is_root_level: Whether the group returns at the highest level of the
+        agregation tree
+    :var aggregation_actors: A list of peers appearing in the group under role
+        aggregation actor
+    :var participating_nodes: A list of peers appearing in the group under role
+        aggregation participants
+    """
     def __init__(self, id, level, is_root_level=False):
         self.id = id
         self.level = level
@@ -16,6 +28,11 @@ class AggregationGroup:
 
 
 class AggregationTree:
+    """Class representing aggregation tree
+
+    :var groups: A list of aggregation groups in the tree in no specific order by
+        default
+    """
     def __init__(self):
         self.groups = []
 
