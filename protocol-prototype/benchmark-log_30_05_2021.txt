@@ -3578,3 +3578,9 @@ All times: {'time-only': [0.34940097101207357, 0.32451442901219707, 0.3956704590
 Running for 'time-only' average after 1 times: 0.32638943000347354
 Running for 'time-only' average after 2 times: 0.3370321519978461
 Running for 'time-only' average after 3 times: 0.35612985866706975
+All times: {'time-only': [0.32638943000347354, 0.34767487399221864, 0.39432527200551704]}
+All times: {}
+Running for 'time-only' average after 1 times: 0.33398118399782106
+Running for 'time-only' average after 2 times: 0.33378259000892285
+Running for 'time-only' average after 3 times: 0.3583134333409059
+All times: {'time-only': [0.33398118399782106, 0.33358399602002464, 0.40737512000487186]}

@@ -149,7 +149,7 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
                 if self.debug:
                     print('Received assigned aggregation tree jobs')
                 self.__active_aggregation_id, self.__num_nodes, \
-                    group_list, self.__aggregation_profile = message
+                    group_list, self.__aggregation_profile = payload
 
                 print(f'\t[{self.address}]: Active aggregation id set to {self.__active_aggregation_id}')
                 self.__aggregation_group_list = sorted(
