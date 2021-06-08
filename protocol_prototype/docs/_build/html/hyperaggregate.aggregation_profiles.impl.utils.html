@@ -1,0 +1,421 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>hyperaggregate.aggregation_profiles.impl.utils package &mdash; HyperAggregate 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="hyperaggregate.client package" href="hyperaggregate.client.html" />
+    <link rel="prev" title="hyperaggregate.aggregation_profiles.impl package" href="hyperaggregate.aggregation_profiles.impl.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> HyperAggregate
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="hyperaggregate.html">hyperaggregate package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="hyperaggregate.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="hyperaggregate.aggregation_profiles.html">hyperaggregate.aggregation_profiles package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hyperaggregate.client.html">hyperaggregate.client package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hyperaggregate.netutils.html">hyperaggregate.netutils package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hyperaggregate.server.html">hyperaggregate.server package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hyperaggregate.shared.html">hyperaggregate.shared package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hyperaggregate.html#module-hyperaggregate">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HyperAggregate</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">src</a> &raquo;</li>
+        
+          <li><a href="hyperaggregate.html">hyperaggregate package</a> &raquo;</li>
+        
+          <li><a href="hyperaggregate.aggregation_profiles.html">hyperaggregate.aggregation_profiles package</a> &raquo;</li>
+        
+          <li><a href="hyperaggregate.aggregation_profiles.impl.html">hyperaggregate.aggregation_profiles.impl package</a> &raquo;</li>
+        
+      <li>hyperaggregate.aggregation_profiles.impl.utils package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/hyperaggregate.aggregation_profiles.impl.utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hyperaggregate-aggregation-profiles-impl-utils-package">
+<h1>hyperaggregate.aggregation_profiles.impl.utils package<a class="headerlink" href="#hyperaggregate-aggregation-profiles-impl-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-hyperaggregate.aggregation_profiles.impl.utils.dictutils">
+<span id="hyperaggregate-aggregation-profiles-impl-utils-dictutils-module"></span><h2>hyperaggregate.aggregation_profiles.impl.utils.dictutils module<a class="headerlink" href="#module-hyperaggregate.aggregation_profiles.impl.utils.dictutils" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.utils.dictutils.map_dict">
+<span class="sig-prename descclassname"><span class="pre">hyperaggregate.aggregation_profiles.impl.utils.dictutils.</span></span><span class="sig-name descname"><span class="pre">map_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map_function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dictionary</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.utils.dictutils.map_dict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Maps a dictionary to another by preserving keys and applying the given map</dt><dd><p>function to values keys point to</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>map_function</strong> (<em>V =&gt; A</em>) – Function from V to A where V are values of dictionary
+and A is any type</p></li>
+<li><p><strong>dictionary</strong> (<em>dict</em><em>(</em><em>K</em><em>, </em><em>V</em><em>)</em>) – Dictionary of keys of type K pointing to values of type V</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary with keys same as the input dictionary, while each
+value is obtained by applying the given function to the value under
+particular key</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict(K, A)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-hyperaggregate.aggregation_profiles.impl.utils.numberutils">
+<span id="hyperaggregate-aggregation-profiles-impl-utils-numberutils-module"></span><h2>hyperaggregate.aggregation_profiles.impl.utils.numberutils module<a class="headerlink" href="#module-hyperaggregate.aggregation_profiles.impl.utils.numberutils" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.utils.numberutils.convert_to_float_array">
+<span class="sig-prename descclassname"><span class="pre">hyperaggregate.aggregation_profiles.impl.utils.numberutils.</span></span><span class="sig-name descname"><span class="pre">convert_to_float_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimals_included</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.utils.numberutils.convert_to_float_array" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>The inverse function of convert_to_int_array function.</dt><dd><p>Converts a numpy array of type int into an array of type float under
+assumption that last decimals_included digits of each int number are
+their decimal digits in float representation.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arr</strong> (<em>np.array</em><em>[</em><em>int</em><em>]</em>) – Array to be converted</p></li>
+<li><p><strong>decimals_included</strong> (<em>int</em>) – Number of decimals included in int representation
+of array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>np.array[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.utils.numberutils.convert_to_int_array">
+<span class="sig-prename descclassname"><span class="pre">hyperaggregate.aggregation_profiles.impl.utils.numberutils.</span></span><span class="sig-name descname"><span class="pre">convert_to_int_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimals_included</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.utils.numberutils.convert_to_int_array" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Converts a numpy array of type float into an array of type int while</dt><dd><p>preserving information about decimals_included decimals. It is not
+recommended to use array in this form for mathematical operations.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arr</strong> (<em>np.array</em><em>[</em><em>float</em><em>]</em>) – Array to be converted</p></li>
+<li><p><strong>decimals_included</strong> (<em>int</em>) – Number of decimals to be preserved</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>np.array[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-hyperaggregate.aggregation_profiles.impl.utils.secret_sharing">
+<span id="hyperaggregate-aggregation-profiles-impl-utils-secret-sharing-module"></span><h2>hyperaggregate.aggregation_profiles.impl.utils.secret_sharing module<a class="headerlink" href="#module-hyperaggregate.aggregation_profiles.impl.utils.secret_sharing" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.utils.secret_sharing.create_additive_shares">
+<span class="sig-prename descclassname"><span class="pre">hyperaggregate.aggregation_profiles.impl.utils.secret_sharing.</span></span><span class="sig-name descname"><span class="pre">create_additive_shares</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_shares</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.utils.secret_sharing.create_additive_shares" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create additive int64 shares out of the passed int64 array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arr</strong> (<em>np.array</em><em>[</em><em>np.int64</em><em>]</em>) – Arrray to create shares out of</p></li>
+<li><p><strong>num_shares</strong> (<em>int</em>) – Number of shares to create</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of shares</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list[np.array[np.int64]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.utils.secret_sharing.rand_interval">
+<span class="sig-prename descclassname"><span class="pre">hyperaggregate.aggregation_profiles.impl.utils.secret_sharing.</span></span><span class="sig-name descname"><span class="pre">rand_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">low</span></em>, <em class="sig-param"><span class="pre">high</span></em>, <em class="sig-param"><span class="pre">shape</span></em>, <em class="sig-param"><span class="pre">sampler_function=&lt;built-in</span> <span class="pre">method</span> <span class="pre">rand</span> <span class="pre">of</span> <span class="pre">numpy.random.mtrand.RandomState</span> <span class="pre">object&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.utils.secret_sharing.rand_interval" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>(Deprecated) Initializes array of the given shape with random values in</dt><dd><p>interval [low, high) sampled by sampler_function</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>low</strong> (<em>float</em>) – Lower bound</p></li>
+<li><p><strong>high</strong> (<em>float</em>) – Upper bound</p></li>
+<li><p><strong>shape</strong> (<em>list</em><em>[</em><em>int</em><em>] or </em><em>Tuple</em><em>[</em><em>int</em><em>]</em>) – Shape of the output</p></li>
+<li><p><strong>sampler_function</strong> ((<a href="#id1"><span class="problematic" id="id2">*</span></a>int) =&gt; np.array) – A function that accepts shape and returns a sample
+of the given size with each value being in the range [0, 1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Array of specified shape</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.utils.secret_sharing.reconstruct_additive_secretsharing_result">
+<span class="sig-prename descclassname"><span class="pre">hyperaggregate.aggregation_profiles.impl.utils.secret_sharing.</span></span><span class="sig-name descname"><span class="pre">reconstruct_additive_secretsharing_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shares</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.utils.secret_sharing.reconstruct_additive_secretsharing_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sum of given additive shares</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>shares</strong> (<em>list</em><em>[</em><em>np.array</em><em>]</em>) – Shares</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Sum of shares over axis 0</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-hyperaggregate.aggregation_profiles.impl.utils.torchutils">
+<span id="hyperaggregate-aggregation-profiles-impl-utils-torchutils-module"></span><h2>hyperaggregate.aggregation_profiles.impl.utils.torchutils module<a class="headerlink" href="#module-hyperaggregate.aggregation_profiles.impl.utils.torchutils" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.utils.torchutils.convert_numpy_state_dict_to_torch">
+<span class="sig-prename descclassname"><span class="pre">hyperaggregate.aggregation_profiles.impl.utils.torchutils.</span></span><span class="sig-name descname"><span class="pre">convert_numpy_state_dict_to_torch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numpy_state_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.utils.torchutils.convert_numpy_state_dict_to_torch" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>The inverse function of convert_state_dict_to_numpy.</dt><dd><p>Converts state dictionary from numpy form back to torch.tensor form.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>numpy_state_dict</strong> (<em>dict</em><em>(</em><em>string</em><em>, </em><em>numpy.array</em><em>)</em>) – Analogue of PyTorch state_dict but instead of
+using tensors uses numpy arrays</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict(str, torch.tensor)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.utils.torchutils.convert_state_dict_to_numpy">
+<span class="sig-prename descclassname"><span class="pre">hyperaggregate.aggregation_profiles.impl.utils.torchutils.</span></span><span class="sig-name descname"><span class="pre">convert_state_dict_to_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.utils.torchutils.convert_state_dict_to_numpy" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Converts each tensor of the state dictionary into the equivalent</dt><dd><p>numpy array.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state_dict</strong> (<em>dict</em><em>(</em><em>str</em><em>, </em><em>torch.tensor</em><em>)</em>) – collections.OrderedDict</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict(string, numpy.array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-hyperaggregate.aggregation_profiles.impl.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-hyperaggregate.aggregation_profiles.impl.utils" title="Permalink to this headline">¶</a></h2>
+<p>Helper functionality used to implement concrete aggregation profiles</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="hyperaggregate.client.html" class="btn btn-neutral float-right" title="hyperaggregate.client package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="hyperaggregate.aggregation_profiles.impl.html" class="btn btn-neutral float-left" title="hyperaggregate.aggregation_profiles.impl package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Milos Vujasinovic.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

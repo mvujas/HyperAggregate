@@ -1,0 +1,446 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>hyperaggregate.netutils package &mdash; HyperAggregate 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="hyperaggregate.server package" href="hyperaggregate.server.html" />
+    <link rel="prev" title="hyperaggregate.client.utils package" href="hyperaggregate.client.utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> HyperAggregate
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="hyperaggregate.html">hyperaggregate package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="hyperaggregate.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hyperaggregate.aggregation_profiles.html">hyperaggregate.aggregation_profiles package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hyperaggregate.client.html">hyperaggregate.client package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">hyperaggregate.netutils package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hyperaggregate.server.html">hyperaggregate.server package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hyperaggregate.shared.html">hyperaggregate.shared package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hyperaggregate.html#module-hyperaggregate">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HyperAggregate</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">src</a> &raquo;</li>
+        
+          <li><a href="hyperaggregate.html">hyperaggregate package</a> &raquo;</li>
+        
+      <li>hyperaggregate.netutils package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/hyperaggregate.netutils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hyperaggregate-netutils-package">
+<h1>hyperaggregate.netutils package<a class="headerlink" href="#hyperaggregate-netutils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-hyperaggregate.netutils.abstract_message_router">
+<span id="hyperaggregate-netutils-abstract-message-router-module"></span><h2>hyperaggregate.netutils.abstract_message_router module<a class="headerlink" href="#module-hyperaggregate.netutils.abstract_message_router" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.abstract_message_router.AbstractMessageRouter">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hyperaggregate.netutils.abstract_message_router.</span></span><span class="sig-name descname"><span class="pre">AbstractMessageRouter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.netutils.abstract_message_router.AbstractMessageRouter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Boilerplate class that starts a socket and routes messages it receives
+to appropriate callback function based on the type of messages. This class
+only provides getters to internal attributes or hides them in order to
+protect integrity of the state of the attributes of the object</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.abstract_message_router.AbstractMessageRouter.address">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">address</span></span><a class="headerlink" href="#hyperaggregate.netutils.abstract_message_router.AbstractMessageRouter.address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the address that socket is running on</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The address of the socket</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.abstract_message_router.AbstractMessageRouter.debug">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">debug</span></span><a class="headerlink" href="#hyperaggregate.netutils.abstract_message_router.AbstractMessageRouter.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether debug mode is active</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Is debug mode active</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.abstract_message_router.AbstractMessageRouter.register_callbacks">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">register_callbacks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.netutils.abstract_message_router.AbstractMessageRouter.register_callbacks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that should return a dictionary of message types as
+keys associated with their coresponding callbacks as values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict(<a class="reference internal" href="#hyperaggregate.netutils.message.MessageType" title="hyperaggregate.netutils.message.MessageType">MessageType</a>, (str, object) =&gt; ())</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.abstract_message_router.AbstractMessageRouter.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.netutils.abstract_message_router.AbstractMessageRouter.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function aimed at simplyfing code and hiding socket object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong> (<em>str</em>) – The address of the sender of the message</p></li>
+<li><p><strong>message</strong> (<em>object</em>) – The message</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.abstract_message_router.AbstractMessageRouter.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.netutils.abstract_message_router.AbstractMessageRouter.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes callbacks and starts the socket</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.abstract_message_router.AbstractMessageRouter.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.netutils.abstract_message_router.AbstractMessageRouter.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the socket</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-hyperaggregate.netutils.message">
+<span id="hyperaggregate-netutils-message-module"></span><h2>hyperaggregate.netutils.message module<a class="headerlink" href="#module-hyperaggregate.netutils.message" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.message.Message">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hyperaggregate.netutils.message.</span></span><span class="sig-name descname"><span class="pre">Message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.netutils.message.Message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The class representing messages exhanged between nodes on the network</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.message.MessageType">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hyperaggregate.netutils.message.</span></span><span class="sig-name descname"><span class="pre">MessageType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.netutils.message.MessageType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Enum of possible message types</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.message.MessageType.AGGREGATION_SIGNUP">
+<span class="sig-name descname"><span class="pre">AGGREGATION_SIGNUP</span></span><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#hyperaggregate.netutils.message.MessageType.AGGREGATION_SIGNUP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.message.MessageType.FINAL_PARTIAL_SHARES">
+<span class="sig-name descname"><span class="pre">FINAL_PARTIAL_SHARES</span></span><em class="property"> <span class="pre">=</span> <span class="pre">6</span></em><a class="headerlink" href="#hyperaggregate.netutils.message.MessageType.FINAL_PARTIAL_SHARES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.message.MessageType.GROUP_ASSIGNMENT">
+<span class="sig-name descname"><span class="pre">GROUP_ASSIGNMENT</span></span><em class="property"> <span class="pre">=</span> <span class="pre">4</span></em><a class="headerlink" href="#hyperaggregate.netutils.message.MessageType.GROUP_ASSIGNMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.message.MessageType.HEALTH_CHECK">
+<span class="sig-name descname"><span class="pre">HEALTH_CHECK</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#hyperaggregate.netutils.message.MessageType.HEALTH_CHECK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.message.MessageType.HEALTH_CONFIRMATION">
+<span class="sig-name descname"><span class="pre">HEALTH_CONFIRMATION</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#hyperaggregate.netutils.message.MessageType.HEALTH_CONFIRMATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.message.MessageType.MODEL_UPDATE">
+<span class="sig-name descname"><span class="pre">MODEL_UPDATE</span></span><em class="property"> <span class="pre">=</span> <span class="pre">7</span></em><a class="headerlink" href="#hyperaggregate.netutils.message.MessageType.MODEL_UPDATE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.message.MessageType.NO_MODEL_NEEDED">
+<span class="sig-name descname"><span class="pre">NO_MODEL_NEEDED</span></span><em class="property"> <span class="pre">=</span> <span class="pre">8</span></em><a class="headerlink" href="#hyperaggregate.netutils.message.MessageType.NO_MODEL_NEEDED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.message.MessageType.PARTIAL_MODEL_SHARE">
+<span class="sig-name descname"><span class="pre">PARTIAL_MODEL_SHARE</span></span><em class="property"> <span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#hyperaggregate.netutils.message.MessageType.PARTIAL_MODEL_SHARE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.message.MessageType.SIGNUP_CONFIRMATION">
+<span class="sig-name descname"><span class="pre">SIGNUP_CONFIRMATION</span></span><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#hyperaggregate.netutils.message.MessageType.SIGNUP_CONFIRMATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-hyperaggregate.netutils.zmqsockets">
+<span id="hyperaggregate-netutils-zmqsockets-module"></span><h2>hyperaggregate.netutils.zmqsockets module<a class="headerlink" href="#module-hyperaggregate.netutils.zmqsockets" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.zmqsockets.MessageWrapper">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hyperaggregate.netutils.zmqsockets.</span></span><span class="sig-name descname"><span class="pre">MessageWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sender_addr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_addr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.netutils.zmqsockets.MessageWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Message wrapper that includes important additional information
+with the message (namely sender and destination address)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.zmqsockets.ZMQDirectSocket">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hyperaggregate.netutils.zmqsockets.</span></span><span class="sig-name descname"><span class="pre">ZMQDirectSocket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.netutils.zmqsockets.ZMQDirectSocket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstraction of peer to peer network communication interface implemented
+with ZeroMQ</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.zmqsockets.ZMQDirectSocket.address">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">address</span></span><a class="headerlink" href="#hyperaggregate.netutils.zmqsockets.ZMQDirectSocket.address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the address that socket is running on</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Address of the socket</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.zmqsockets.ZMQDirectSocket.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dest_address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.netutils.zmqsockets.ZMQDirectSocket.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps a message and send it to the specified destination</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dest_address</strong> (<em>str</em>) – An address to send the message to</p></li>
+<li><p><strong>message</strong> (<em>object</em>) – The message</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.zmqsockets.ZMQDirectSocket.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_message_received_callback</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.netutils.zmqsockets.ZMQDirectSocket.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initliaze process that waits for messages and the thread that
+processes them and starts them</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>on_message_received_callback</strong> (<em>function</em><em> (</em><em>str</em><em>, </em><em>object</em><em>) </em><em>=&gt;</em><em> (</em><em>)</em>) – Function that accepts a sender
+address and the message payload when a message is received</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hyperaggregate.netutils.zmqsockets.ZMQDirectSocket.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.netutils.zmqsockets.ZMQDirectSocket.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets running indicator to false which stops the socket from
+receiving anymore messages (effectively stops message processing
+thread)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-hyperaggregate.netutils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-hyperaggregate.netutils" title="Permalink to this headline">¶</a></h2>
+<p>Implements basis for network communication between nodes</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="hyperaggregate.server.html" class="btn btn-neutral float-right" title="hyperaggregate.server package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="hyperaggregate.client.utils.html" class="btn btn-neutral float-left" title="hyperaggregate.client.utils package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Milos Vujasinovic.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -41,11 +41,13 @@ async function train(model, x, y, epochs) {
         }
     }
   );
-  // for(let i = 0; i < epochs; i++) {
-  await model.fit(x, y);
+  for(let i = 0; i < epochs; i++) {
+    await model.fit(x, y);
 
-  await client.averageModel(model);
-  // }
+    await client.averageModel(model);
+
+    await sleep(1000)
+  }
 }
 
-train(model, xs, ys, 1);
+train(model, xs, ys, 10);
