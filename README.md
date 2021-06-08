@@ -2,7 +2,7 @@
 
 Implementation of in-house secure aggregation protocol.
 
-The documentation can be accessed by opening `protocol_prototype/docs/_build/html/index.html` in the browser.
+The documentation can be accessed by opening `protocol_prototype/docs/_build/html/index.html` in browser.
 
 ## Installation
 
