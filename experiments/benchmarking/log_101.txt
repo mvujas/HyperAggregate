@@ -1,0 +1,9 @@
+Running for 'time-only' average after 1 times: 0.3454588659988076
+Running for 'time-only' average after 2 times: 0.3511344944981829
+Running for 'time-only' average after 3 times: 0.37410725933174643
+Running for 'time-only' average after 1 times: 0.37936169000022346
+Running for 'time-only' average after 2 times: 0.37639468100132945
+Running for 'time-only' average after 3 times: 0.40403831500104087
+Running for 'time-only' average after 1 times: 0.3433267500004149
+Running for 'time-only' average after 2 times: 0.33921450250272756
+Running for 'time-only' average after 3 times: 0.36320496700257837
