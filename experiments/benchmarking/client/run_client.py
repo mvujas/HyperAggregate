@@ -51,8 +51,15 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, ad
             print("----------- Epoch", epoch, "finished ----------- ")
 
         # Do aggregation and load the aggregated model
-        new_state_dict = aggregator.aggregate(model.state_dict())
+        state_dictionary = model.state_dict()
+        for k in state_dictionary:
+            state_dictionary[k] = state_dictionary[k].cpu()
+
+        new_state_dict = aggregator.aggregate(state_dictionary)
         time_elapsed = aggregator.time_elapsed
+
+        for k in new_state_dict:
+            new_state_dict[k] = new_state_dict[k].to(device)
 
         model.load_state_dict(new_state_dict)
         print(f'Loading the averaged model, time elapsed: {time_elapsed}')
@@ -181,7 +188,7 @@ def main(args):
         train_and_send(args, model, device, train_loader, test_loader,
                 optimizer, addr_message)
     except Exception as exc:
-        print('Exception while running a client:')
+        print('Exception while running a client:', exc)
         traceback.print_tb(exc.__traceback__)
 
 
