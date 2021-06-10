@@ -7,6 +7,8 @@ from .utils.torchutils import convert_state_dict_to_numpy, \
     convert_numpy_state_dict_to_torch
 from .utils.dictutils import map_dict
 
+import numpy as np
+
 class AverageAdditiveSharingModelProfile(AbstractAggregationProfile):
     """Defines logic for averaging 'numpy state dictionaries'"""
     def __init__(self, digits_to_keep):
@@ -37,6 +39,7 @@ class AverageAdditiveSharingModelProfile(AbstractAggregationProfile):
 
     def aggregate(self, prepared_shares):
         """Sums model partial shares and client counts"""
+        ii64 = np.iinfo(np.int64)
         prepared_model_shares = [
             x[0]\
             for x in prepared_shares
@@ -49,7 +52,7 @@ class AverageAdditiveSharingModelProfile(AbstractAggregationProfile):
                 share[layer_name]\
                 for share in prepared_model_shares
             )
-        client_count_sum = sum([x[1] for x in prepared_shares])
+        client_count_sum = sum([x[1] for x in prepared_shares]) % ii64.max
         return (result, client_count_sum)
 
     def unprepare(self, prepared_data):

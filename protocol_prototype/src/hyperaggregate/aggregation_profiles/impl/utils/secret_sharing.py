@@ -3,15 +3,15 @@ import numpy as np
 def create_int_additive_shares(number_to_split, num_shares):
     """Splits given number in specified number of additive shares
 
-    :param number_to_split: Number to split
-    :type number_to_split: np.int64
+    :param number_to_split: Number to split (in range of np.int64)
+    :type number_to_split: int
 
     :param num_shares: Number of shares that number_to_split should be split
         into
     :type num_shares: int
 
     :return: List of additive shares
-    :rtype: list[np.int64]
+    :rtype: list[int]
     """
     ii64 = np.iinfo(np.int64)
     shares = []
@@ -21,6 +21,7 @@ def create_int_additive_shares(number_to_split, num_shares):
         else:
             share = np.random.randint(ii64.min, ii64.max)
             number_to_split -= share
+            number_to_split %= ii64.max
         shares.append(share)
     return shares
 
