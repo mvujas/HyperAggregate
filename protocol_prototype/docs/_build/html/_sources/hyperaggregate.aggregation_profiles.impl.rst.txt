@@ -20,6 +20,14 @@ hyperaggregate.aggregation\_profiles.impl.additive\_sharing\_model\_profile modu
    :undoc-members:
    :show-inheritance:
 
+hyperaggregate.aggregation\_profiles.impl.torch\_additive\_sharing\_model\_profile module
+-----------------------------------------------------------------------------------------
+
+.. automodule:: hyperaggregate.aggregation_profiles.impl.torch_additive_sharing_model_profile
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

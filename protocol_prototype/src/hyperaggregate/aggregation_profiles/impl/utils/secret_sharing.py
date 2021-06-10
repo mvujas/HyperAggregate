@@ -1,5 +1,29 @@
 import numpy as np
 
+def create_int_additive_shares(number_to_split, num_shares):
+    """Splits given number in specified number of additive shares
+
+    :param number_to_split: Number to split
+    :type number_to_split: np.int64
+
+    :param num_shares: Number of shares that number_to_split should be split
+        into
+    :type num_shares: int
+
+    :return: List of additive shares
+    :rtype: list[np.int64]
+    """
+    ii64 = np.iinfo(np.int64)
+    shares = []
+    for i in range(num_shares):
+        if i == num_shares - 1:
+            share = number_to_split
+        else:
+            share = np.random.randint(ii64.min, ii64.max)
+            number_to_split -= share
+        shares.append(share)
+    return shares
+
 def rand_interval(low, high, shape, sampler_function=np.random.rand):
     """(Deprecated) Initializes array of the given shape with random values in
         interval [low, high) sampled by sampler_function

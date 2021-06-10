@@ -1,18 +1,18 @@
 from ..netutils.message import Message, MessageType
 from ..shared.responsive_message_router import ResponsiveMessageRouter
-from threading import Lock, Condition
 
 from .utils.aggregation_model_queue import AggregationModelQueue
 from .utils.partial_model_message import PartialModelMessage
 
-import random
 import gc
-
+import random
 import timeit
+import traceback
+
 
 from enum import Enum
-
 from queue import Empty
+from threading import Lock, Condition
 
 
 class ClientState(Enum):
@@ -51,6 +51,8 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
         #   received the model
         self.__participants_that_dont_need_model_lock = Lock()
         self.__participants_that_dont_need_model = None
+
+        self.__partial_model_queue_waiting_list = []
 
     def register_callbacks(self):
         """Assigns proper callbacks to corresponding messages"""
@@ -205,10 +207,10 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
         for actor_node, model_share in zip(group.aggregation_actors, model_shares):
             if actor_node != self.address:
                 self.send(actor_node, Message(MessageType.PARTIAL_MODEL_SHARE, PartialModelMessage(
-                    group_id, model_share
+                    self.__active_aggregation_id, group_id, model_share
                 )))
             else:
-                self.__aggregation_model_queues[group_id].add(self.address, model_share)
+                self.__aggregation_model_queues['queues'][group_id].add(self.address, model_share)
             del model_share
         del model_shares
         # In future ideally program would be forced to free memory of the share
@@ -268,7 +270,7 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
         :return: Aggregation of partial model shares for the given group
         :rtype: object
         """
-        aggregation_model_queue = self.__aggregation_model_queues[group_id]
+        aggregation_model_queue = self.__aggregation_model_queues['queues'][group_id]
         received_partial_shares = []
         try:
             while True:
@@ -278,7 +280,53 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
         except Empty:
             pass
         model = self.__aggregation_profile.aggregate(received_partial_shares)
+        gc.collect()
         return model
+
+    def __do_top_level_actors_aggregation(self, root_group, current_partial_model):
+        """Perform aggregation between aggregation actors of the root group
+
+        :param root_group_id: Identifier of the root group
+        :type root_group_id: int
+        """
+        with self.__resulting_model_lock:
+            final_partial_shares = []
+            group_id = root_group.id
+
+            for actor in root_group.aggregation_actors:
+                if actor != self.address:
+                    self.send(actor, Message(MessageType.FINAL_PARTIAL_SHARES, PartialModelMessage(
+                        self.__active_aggregation_id, group_id, current_partial_model
+                    )))
+                else:
+                    self.__aggregation_model_queues['queues']['final'].add(self.address, current_partial_model)
+
+            final_model_sum = self.__aggregate_shares_received_for_group(
+                'final'
+            )
+
+            self.__set_model(final_model_sum)
+            gc.collect()
+
+
+    def __reset_aggregation_state(self):
+        """Called at the end of aggregation. Reset state of variables to
+        default indicating that no aggregation is ongoing
+        """
+        with self.__state_lock:
+            with self.__resulting_model_lock:
+                with self.__participants_that_dont_need_model_lock:
+                    self.__previous_aggregation_ids.add(self.__active_aggregation_id)
+                    self.__participants_that_dont_need_model = set()
+                self.__num_nodes = None
+                self.__resulting_model = None
+                self.__active_aggregation_id = None
+                self.__partial_model_queue_waiting_list = []
+                print(f'\t[{self.address}]: Active aggregation id set to {self.__active_aggregation_id}')
+                self.__state = ClientState.NO_JOB
+            with self.__aggregation_model_queues_lock:
+                self.__aggregation_model_queues = None
+
 
     def __do_aggregation(self, group_list, model):
         """Perform secure aggregation with other nodes signed up for it
@@ -324,33 +372,8 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
 
 
             if last_actor_group is not None and last_actor_group.is_root_level:
-                with self.__resulting_model_lock:
-                    final_partial_shares = []
-                    root_group = last_actor_group
-                    group_id = root_group.id
-
-                    for actor in root_group.aggregation_actors:
-                        if actor != self.address:
-                            self.send(actor, Message(MessageType.FINAL_PARTIAL_SHARES, PartialModelMessage(
-                                group_id, current_model
-                            )))
-                        else:
-                            self.__aggregation_model_queues['final'].add(self.address, current_model)
-
-
-                    final_model_sum = self.__aggregate_shares_received_for_group(
-                        'final'
-                    )
-
-                    averaged_model = {
-                        k: arr // self.__num_nodes \
-                        for k, arr in final_model_sum.items()
-                    }
-
-                    self.__set_model(averaged_model)
-
-
-                    gc.collect()
+                root_group = last_actor_group
+                self.__do_top_level_actors_aggregation(root_group, current_model)
             else:
                 with self.__wait_model:
                     self.__wait_model.wait()
@@ -370,7 +393,6 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
                 for participant in ordered_participant_list:
                     if participant != self.address and \
                             participant not in self.__participants_that_dont_need_model:
-                        # print(f'\t\t[{self.address}]: Model sent to {participant}')
                         self.send(participant, Message(
                             MessageType.MODEL_UPDATE, (self.__active_aggregation_id, self.__resulting_model)))
                     # else:
@@ -381,21 +403,15 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
             try:
                 return self.__resulting_model
             finally:
-                with self.__state_lock:
-                    with self.__resulting_model_lock:
-                        with self.__participants_that_dont_need_model_lock:
-                            self.__previous_aggregation_ids.add(self.__active_aggregation_id)
-                            self.__participants_that_dont_need_model = set()
-                        self.__num_nodes = None
-                        self.__resulting_model = None
-                        self.__active_aggregation_id = None
-                        print(f'\t[{self.address}]: Active aggregation id set to {self.__active_aggregation_id}')
-                        self.__state = ClientState.NO_JOB
-        except Exception as e:
-            print(e)
+                self.__reset_aggregation_state()
+        except Exception as exc:
+            print('Exception in aggregation:', exc)
+            traceback.print_tb(exc.__traceback__)
 
     def __create_aggregation_model_queues(self, group_list):
-        """Prepares model queues for models to go into them when received
+        """Prepares model queues for models to go into them when received.
+        After the preparation calls the method that fills the quues with
+        partial models from the waiting list.
 
         :param group_list: A list of groups that the nodes is in either as an
             aggregation actor or participant
@@ -404,14 +420,49 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
         with self.__aggregation_model_queues_lock:
             actor_groups = list(filter(self.__is_actor, group_list))
             self.__aggregation_model_queues = {
-                group.id: AggregationModelQueue(group.participating_nodes)\
-                for group in actor_groups
+                'aggregation_id': self.__active_aggregation_id,
+                'queues': dict()
             }
+            for group in actor_groups:
+                self.__aggregation_model_queues['queues'][group.id] =\
+                    AggregationModelQueue(group.participating_nodes)
             root_groups = list(
                 filter(lambda group: group.is_root_level, actor_groups))
             if root_groups:
-                self.__aggregation_model_queues['final'] = \
+                self.__aggregation_model_queues['queues']['final'] = \
                     AggregationModelQueue(root_groups[0].aggregation_actors)
+            self.__process_model_queue_waiting_list()
+
+    def __process_model_queue_waiting_list(self):
+        """Reads partial models from the waiting list. If aggregation id of
+        the partial model is not equal to the id of aggregation currently
+        running, the partial model is skipped and not added in any model queue
+        """
+        for address, partial_model in self.__partial_model_queue_waiting_list:
+            if self.__aggregation_model_queues['aggregation_id'] == partial_model.aggregation_id:
+                self.__aggregation_model_queues['queues'][partial_model.group_id].add(
+                    address,
+                    partial_model.model)
+        self.__partial_model_queue_waiting_list = []
+
+    def __insert_partial_model_in_model_queus(self, address, partial_model):
+        """Puts the given partial model in corresponding model queue. If a node
+        haven't done setting up model queues it will put the partial model
+        into a waiting list and on initialization of model queus this list will
+        be read. See __process_model_queue_waiting_list to check how it's done.
+
+        :param address: Address of a peer that send the partial model
+        :param partial_model: Object containing partial share,
+            group and aggregation id for which the partial share is sent
+        """
+        with self.__aggregation_model_queues_lock:
+            if partial_model.aggregation_id not in self.__previous_aggregation_ids:
+                if self.__aggregation_model_queues is None:
+                    self.__partial_model_queue_waiting_list.append((address, partial_model))
+                elif self.__aggregation_model_queues['aggregation_id'] == partial_model.aggregation_id:
+                    self.__aggregation_model_queues['queues'][partial_model.group_id].add(
+                        address,
+                        partial_model.model)
 
     def __handle_partial_model(self, address, partial_model):
         """Puts partial share it receives into corresponding aggregation
@@ -425,11 +476,9 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
             should take part in
         :type partial_model: utils.PartialModelMessage
         """
-        # print(f'Received model {partial_model.model} for group {partial_model.group_id} from {address}')
         assert partial_model.group_id != 'final', 'Invalid way to send final partial share'
-        self.__aggregation_model_queues[partial_model.group_id].add(
-            address,
-            partial_model.model)
+        self.__insert_partial_model_in_model_queus(address, partial_model)
+
 
     def __handle_final_shares(self, address, partial_model):
         """Puts submodel of final group it receives into corresponding
@@ -444,10 +493,8 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
             considered)
         :type partial_model: utils.PartialModelMessage
         """
-        # print(f'Received final share {partial_model.model} from {address}')
-        self.__aggregation_model_queues['final'].add(
-            address,
-            partial_model.model)
+        partial_model.group_id = 'final'
+        self.__insert_partial_model_in_model_queus(address, partial_model)
 
     def __handle_no_model_needed(self, address, payload):
         """Puts given address in list of addresses that doesn't need the
@@ -487,8 +534,7 @@ class PrivacyPreservingAggregator(ResponsiveMessageRouter):
             produced the model and the model itself
         :type message: tuple[int, object]
         """
-        model = message[1]
-        active_id = message[0]
+        active_id, model = message
         print(f'\t[{self.address}]: Trying to acquire model lock')
         with self.__resulting_model_lock:
             if active_id == self.__active_aggregation_id and \

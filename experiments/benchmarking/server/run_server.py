@@ -3,8 +3,8 @@ Starts aggregation server
 """
 import argparse
 from hyperaggregate.server.privacy_preserving_server import SchedulingServer
-from hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile import \
-    AdditiveSharingModelProfile
+from hyperaggregate.aggregation_profiles.impl.torch_additive_sharing_model_profile import \
+    AverageTorchAdditiveSharingModelProfile
 
 def parse_args():
     """Get command line arguments"""
@@ -24,7 +24,7 @@ def parse_args():
 def main(args):
     # Creates aggregation logic server by the server to client
     DIGITS_TO_KEEP = 6
-    agg_profile = AdditiveSharingModelProfile(DIGITS_TO_KEEP)
+    agg_profile = AverageTorchAdditiveSharingModelProfile(DIGITS_TO_KEEP)
     # Creates and start the server
     server = SchedulingServer(
         args.port, target_size=args.target_size, group_size=args.group_size,

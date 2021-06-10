@@ -201,72 +201,60 @@
 <div class="section" id="module-hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile">
 <span id="hyperaggregate-aggregation-profiles-impl-additive-sharing-model-profile-module"></span><h2>hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile module<a class="headerlink" href="#module-hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AdditiveSharingModelProfile">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.</span></span><span class="sig-name descname"><span class="pre">AdditiveSharingModelProfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">digits_to_keep</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AdditiveSharingModelProfile" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AverageAdditiveSharingModelProfile">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.</span></span><span class="sig-name descname"><span class="pre">AverageAdditiveSharingModelProfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">digits_to_keep</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AverageAdditiveSharingModelProfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="hyperaggregate.aggregation_profiles.html#hyperaggregate.aggregation_profiles.abstract_aggregation_profile.AbstractAggregationProfile" title="hyperaggregate.aggregation_profiles.abstract_aggregation_profile.AbstractAggregationProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">hyperaggregate.aggregation_profiles.abstract_aggregation_profile.AbstractAggregationProfile</span></code></a></p>
+<p>Defines logic for averaging ‘numpy state dictionaries’</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AdditiveSharingModelProfile.aggregate">
-<span class="sig-name descname"><span class="pre">aggregate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prepared_shares</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AdditiveSharingModelProfile.aggregate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Aggregates shares (in form of prepared data) into single unit
-of data</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>prepared_shares</strong> (<em>list</em><em>(</em><em>object</em><em>)</em>) – list of data shares in the form ready to be sent
-over network</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The aggregate of shares in the form ready to be sent
-over network</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>object</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AverageAdditiveSharingModelProfile.aggregate">
+<span class="sig-name descname"><span class="pre">aggregate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prepared_shares</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AverageAdditiveSharingModelProfile.aggregate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sums model partial shares and client counts</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AdditiveSharingModelProfile.create_shares_on_prepared_data">
-<span class="sig-name descname"><span class="pre">create_shares_on_prepared_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_shares</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AdditiveSharingModelProfile.create_shares_on_prepared_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates shares on data already prepared for transfer over network</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>prepared_data</strong> (<em>object</em>) – Data in the form ready to be sent over network</p></li>
-<li><p><strong>num_shares</strong> (<em>int</em>) – Number of shares to split data into</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>List of data shares in the form ready to be sent over network</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list(object)</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AverageAdditiveSharingModelProfile.create_shares_on_prepared_data">
+<span class="sig-name descname"><span class="pre">create_shares_on_prepared_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_shares</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AverageAdditiveSharingModelProfile.create_shares_on_prepared_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits model and client count into given number of shares</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AdditiveSharingModelProfile.prepare">
-<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AdditiveSharingModelProfile.prepare" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AverageAdditiveSharingModelProfile.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AverageAdditiveSharingModelProfile.prepare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a tuple where first element is int array model and the
+other is int representing number of clients contributed to this model</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AverageAdditiveSharingModelProfile.unprepare">
+<span class="sig-name descname"><span class="pre">unprepare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prepared_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AverageAdditiveSharingModelProfile.unprepare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts model’s int arrays to float arrays and divides them by the
+client count</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-hyperaggregate.aggregation_profiles.impl.torch_additive_sharing_model_profile">
+<span id="hyperaggregate-aggregation-profiles-impl-torch-additive-sharing-model-profile-module"></span><h2>hyperaggregate.aggregation_profiles.impl.torch_additive_sharing_model_profile module<a class="headerlink" href="#module-hyperaggregate.aggregation_profiles.impl.torch_additive_sharing_model_profile" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.torch_additive_sharing_model_profile.AverageTorchAdditiveSharingModelProfile">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hyperaggregate.aggregation_profiles.impl.torch_additive_sharing_model_profile.</span></span><span class="sig-name descname"><span class="pre">AverageTorchAdditiveSharingModelProfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">digits_to_keep</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.torch_additive_sharing_model_profile.AverageTorchAdditiveSharingModelProfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AverageAdditiveSharingModelProfile" title="hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AverageAdditiveSharingModelProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AverageAdditiveSharingModelProfile</span></code></a></p>
+<p>Defines logic for averaging PyTorch state dictionaries</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.torch_additive_sharing_model_profile.AverageTorchAdditiveSharingModelProfile.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.torch_additive_sharing_model_profile.AverageTorchAdditiveSharingModelProfile.prepare" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transforms PyTorch state dictionary into dictionary of int numpy
-arrays</p>
+arrays and calls the parent method to create tuple of numpy array and
+client count</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AdditiveSharingModelProfile.unprepare">
-<span class="sig-name descname"><span class="pre">unprepare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prepared_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.additive_sharing_model_profile.AdditiveSharingModelProfile.unprepare" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform data received over network into the form usable by
-the application</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>prepared_data</strong> (<em>object</em>) – Data in the form ready to be sent over network</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Data in the form which application can use</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>object</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="hyperaggregate.aggregation_profiles.impl.torch_additive_sharing_model_profile.AverageTorchAdditiveSharingModelProfile.unprepare">
+<span class="sig-name descname"><span class="pre">unprepare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prepared_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.aggregation_profiles.impl.torch_additive_sharing_model_profile.AverageTorchAdditiveSharingModelProfile.unprepare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts model’s int arrays to float arrays and divides then by the
+client count, afterwards converts numpy state dictionary to PyTorch
+state dictionary</p>
 </dd></dl>
 
 </dd></dl>

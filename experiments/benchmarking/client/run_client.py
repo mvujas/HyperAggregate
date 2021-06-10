@@ -50,17 +50,22 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, ad
                 test(model, device, test_loader)
             print("----------- Epoch", epoch, "finished ----------- ")
 
-        # Do aggregation and load the aggregated model
+        # Get state dictionary and move it to cpu
         state_dictionary = model.state_dict()
-        for k in state_dictionary:
-            state_dictionary[k] = state_dictionary[k].cpu()
+        if device.type != 'cpu':
+            for k in state_dictionary:
+                state_dictionary[k] = state_dictionary[k].cpu()
 
+        # Do aggregation
         new_state_dict = aggregator.aggregate(state_dictionary)
         time_elapsed = aggregator.time_elapsed
 
-        for k in new_state_dict:
-            new_state_dict[k] = new_state_dict[k].to(device)
+        # Move the aggregated model's state dictionary to the used device
+        if device.type != 'cpu':
+            for k in new_state_dict:
+                new_state_dict[k] = new_state_dict[k].to(device)
 
+        # Load the aggregated model
         model.load_state_dict(new_state_dict)
         print(f'Loading the averaged model, time elapsed: {time_elapsed}')
 
@@ -172,11 +177,14 @@ def main(args):
         optimizer = optim.Adadelta(model.parameters(), lr=args.lr)
 
         # Loading datasets
-        train_set, test_set = load_data(args.num, args.total)
-        train_idx = list(range(0, len(train_set), args.data_skip))
-        trainset = torch.utils.data.Subset(train_set, train_idx)
-        train_loader = torch.utils.data.DataLoader(trainset, **train_kwargs)
-        test_loader = torch.utils.data.DataLoader(test_set, **test_kwargs)
+        if not args.aggregation_only:
+            train_set, test_set = load_data(args.num, args.total)
+            train_idx = list(range(0, len(train_set), args.data_skip))
+            trainset = torch.utils.data.Subset(train_set, train_idx)
+            train_loader = torch.utils.data.DataLoader(trainset, **train_kwargs)
+            test_loader = torch.utils.data.DataLoader(test_set, **test_kwargs)
+        else:
+            train_loader, test_loader = None, None
 
         # Putting aggregation and benchmark server endpoints in
         #   the proper format

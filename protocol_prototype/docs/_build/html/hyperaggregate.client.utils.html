@@ -247,12 +247,13 @@ is no model in queue to be retrieved. False is returned otherwise.</p>
 <span id="hyperaggregate-client-utils-partial-model-message-module"></span><h2>hyperaggregate.client.utils.partial_model_message module<a class="headerlink" href="#module-hyperaggregate.client.utils.partial_model_message" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="hyperaggregate.client.utils.partial_model_message.PartialModelMessage">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hyperaggregate.client.utils.partial_model_message.</span></span><span class="sig-name descname"><span class="pre">PartialModelMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.client.utils.partial_model_message.PartialModelMessage" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hyperaggregate.client.utils.partial_model_message.</span></span><span class="sig-name descname"><span class="pre">PartialModelMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aggregation_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.client.utils.partial_model_message.PartialModelMessage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Message wrapper around partial share of model for given group</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>aggregation_id</strong> – Identifier for aggregation that this message is part of</p></li>
 <li><p><strong>group_id</strong> – Identifier of the aggregation group inside which the message
 is sent</p></li>
 <li><p><strong>model</strong> – Model</p></li>
