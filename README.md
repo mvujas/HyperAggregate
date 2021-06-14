@@ -12,7 +12,7 @@ pip install protocol_prototype
 ```
 This command will install the package and all required dependencies.
 
-The package is only the secure aggregation algorithm and provides no out of the box way to run the actual system: it is expected that the user will use the package to implement the system according to their own needs. We provide examples how this is expected to be done for [client](experiments/benchmarking/client/run_client.py) and [server](experiments/benchmarking/client/run_server.py) side respectively.
+The package is only the secure aggregation algorithm and provides no out of the box way to run the actual system: it is expected that the user will use the package to implement the system according to their own needs. We provide examples how this is expected to be done for [client](experiments/benchmarking/client/run_client.py) and [server](experiments/benchmarking/server/run_server.py) side respectively.
 
 To see our implementation in action you can run the following command in directory `benchmarking` (supported for Linux):
 ```bash
