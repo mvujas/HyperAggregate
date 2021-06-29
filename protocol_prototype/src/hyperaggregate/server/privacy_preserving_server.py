@@ -4,6 +4,20 @@ from ..shared.responsive_message_router import ResponsiveMessageRouter
 import time
 
 class SchedulingServer(ResponsiveMessageRouter):
+    """Implementation of helper server
+
+    :ivar port: Port on which the server should run on
+    :ivar target_size: Required number of clients to sign up for aggregation
+        before it starts
+    :ivar group_size: Preferable size of aggregation groups in aggregation
+        tree
+    :ivar num_actors: Number of aggregation actors in each group of
+        aggregation tree
+    :ivar aggregation_profile: Aggregation and message transport logic in form
+        of AggregationProfile instance
+    :ivar debug_mode: Indicator whether to use verbose logging suitable for
+        debugging
+    """
     def __init__(self, port, target_size, group_size,
             num_actors, aggregation_profile, debug_mode=False):
         address = f'tcp://*:{port}'
@@ -25,6 +39,11 @@ class SchedulingServer(ResponsiveMessageRouter):
         return result
 
     def __aggregation_signup(self, address):
+        """Callback when a client requests to sign up for aggregation
+
+        :param address: Address of a client that signed up
+        :type address: str
+        """
         if address not in self.__aggregation_queue:
             self.__aggregation_queue.add(address)
             self.send(address, Message(MessageType.SIGNUP_CONFIRMATION))
@@ -33,6 +52,9 @@ class SchedulingServer(ResponsiveMessageRouter):
                 self.__create_aggregation_tree_and_send_jobs()
 
     def __create_aggregation_tree_and_send_jobs(self):
+        """Generation of aggregation tree and communicating it to the
+        clients signed up for aggregation
+        """
         num_nodes = len(self.__aggregation_queue)
         tree, aggregation_pointer_dict =    \
             generate_aggregation_tree(list(self.__aggregation_queue),

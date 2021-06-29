@@ -1,4 +1,5 @@
 import json
+import time
 import asyncio
 from utils.interoperability_utils import deserialize_model, serialize_model
 from hyperaggregate.client.privacy_preserving_aggregator import \
@@ -39,17 +40,33 @@ class IntercommunicatorServerProtocol(asyncio.Protocol):
     def data_received(self, data):
         """Callback called on message received"""
         print('Received aggregation request')
+        time_of_receive = int(time.time() * 1000)
+
         # Reconstruct the model
         message = data.decode()
         obj = json.loads(message)
-        model = deserialize_model(obj)
+        model = deserialize_model(obj['model'])
+
+        time_of_aggregation_start = int(time.time() * 1000)
 
         # Aggregate model with other peers
         aggregated_model = self.aggregator.aggregate(model)
 
+        time_of_aggregation_ending = int(time.time() * 1000)
+
+        response = {
+            'model': serialize_model(aggregated_model),
+            'sign_up_to_aggregation_end_time': time_of_aggregation_ending - \
+                time_of_aggregation_start,
+            'aggregation_time': self.aggregator.time_elapsed,
+            'callTime': obj['callTime'],
+            'time_until_receive': time_of_receive - obj['callTime'],
+            'time_of_sending_back': int(time.time() * 1000)
+        }
+
         # Return the aggregated model to javascript
         print('Returning model update')
-        self.transport.write(json.dumps(serialize_model(aggregated_model)).encode())
+        self.transport.write(json.dumps(response).encode())
 
 
 class MiddlewareServer:

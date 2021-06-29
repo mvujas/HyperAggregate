@@ -78,13 +78,14 @@ def train_and_send(args, model, device, train_loader, test_loader, optimizer, ad
         if args.benchmark_server is not None:
             # Always send the time it took for aggregation
             aggregator.send(args.benchmark_server, ('time-only', time_elapsed))
-            for i, acc in enumerate(accuracies_to_achieve):
-                # Send the number of iteratios it took to achieve a milestone
-                #   only the first time it is exceeded
-                if not achieved[i] and accuracy / 100 >= acc:
-                    achieved[i] = True
-                    aggregator.send(args.benchmark_server,
-                        (f'achieved-{acc}', epoch))
+            if not args.aggregation_only:
+                for i, acc in enumerate(accuracies_to_achieve):
+                    # Send the number of iteratios it took to achieve a milestone
+                    #   only the first time it is exceeded
+                    if not achieved[i] and accuracy / 100 >= acc:
+                        achieved[i] = True
+                        aggregator.send(args.benchmark_server,
+                            (f'achieved-{acc}', epoch))
     # Prematurely closing it may cause some clients not to recieve the model
     #   Seems not to be the issue in the later iterations of the software,
     #   but it's still left there to avoid any unexpected behaviour

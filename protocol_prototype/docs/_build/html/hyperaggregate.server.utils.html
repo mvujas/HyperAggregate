@@ -187,12 +187,48 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="hyperaggregate.server.utils.aggregation_tree_generation.generate_aggregation_tree">
 <span class="sig-prename descclassname"><span class="pre">hyperaggregate.server.utils.aggregation_tree_generation.</span></span><span class="sig-name descname"><span class="pre">generate_aggregation_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">participants</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_actors</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.server.utils.aggregation_tree_generation.generate_aggregation_tree" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Generates aggregation tree for a set of participants and the given
+parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>participants</strong> (<em>set</em><em>[</em><em>string</em><em>]</em>) – A set of indentifiers for the participants of
+aggregation</p></li>
+<li><p><strong>size</strong> (<em>int</em>) – Size of aggregation groups in the tree</p></li>
+<li><p><strong>num_actors</strong> (<em>int</em>) – Number of actors in each group of the tree</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tuple where the first element is the aggregation tree, while
+the other is a dictionary for each particiapnts of the
+groups it is in</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple[<a class="reference internal" href="hyperaggregate.shared.html#hyperaggregate.shared.aggregation_tree.AggregationTree" title="hyperaggregate.shared.aggregation_tree.AggregationTree">AggregationTree</a>, dict[string, list[<a class="reference internal" href="hyperaggregate.shared.html#hyperaggregate.shared.aggregation_tree.AggregationGroup" title="hyperaggregate.shared.aggregation_tree.AggregationGroup">AggregationGroup</a>]]]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyperaggregate.server.utils.aggregation_tree_generation.partition_sizes">
 <span class="sig-prename descclassname"><span class="pre">hyperaggregate.server.utils.aggregation_tree_generation.</span></span><span class="sig-name descname"><span class="pre">partition_sizes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">set_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subset_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_subset_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.server.utils.aggregation_tree_generation.partition_sizes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the size of each part for the set of size set_size</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>set_size</strong> (<em>int</em>) – Size of the set</p></li>
+<li><p><strong>subset_size</strong> (<em>int</em>) – Preferable size of a part</p></li>
+<li><p><strong>min_subset_size</strong> (<em>int</em>) – Minimum size of a part</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Size of each part</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list[int]</p>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 <div class="section" id="module-hyperaggregate.server.utils">

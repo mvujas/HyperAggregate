@@ -22,7 +22,7 @@ def main(args):
             arrs[msg_type] = []
         arrs[msg_type].append(payload)
         arr = arrs[msg_type]
-        txt = f'Running for \'{msg_type}\' average after {len(arr)} times: {avg(arr)}'
+        txt = f'Running average for \'{msg_type}\' after {len(arr)} times: {avg(arr)}'
         print(txt)
         with open(args.log_file, 'a') as f:
             print(txt, file=f)

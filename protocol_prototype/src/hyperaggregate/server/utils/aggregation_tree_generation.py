@@ -2,6 +2,20 @@ import random
 from ...shared.aggregation_tree import AggregationGroup, AggregationTree
 
 def partition_sizes(set_size, subset_size, min_subset_size = 3):
+    """Returns the size of each part for the set of size set_size
+
+    :param set_size: Size of the set
+    :type set_size: int
+
+    :param subset_size: Preferable size of a part
+    :type subset_size: int
+
+    :param min_subset_size: Minimum size of a part
+    :type min_subset_size: int
+
+    :return: Size of each part
+    :rtype: list[int]
+    """
     # print(subset_size, min_subset_size)
     assert subset_size >= min_subset_size, 'Set size must be bigger than minimum subset size'
     result = [subset_size] * (set_size // subset_size)
@@ -15,6 +29,24 @@ def partition_sizes(set_size, subset_size, min_subset_size = 3):
 
 
 def generate_aggregation_tree(participants, size, num_actors):
+    """Generates aggregation tree for a set of participants and the given
+    parameters
+
+    :param participants: A set of indentifiers for the participants of
+        aggregation
+    :type participants: set[string]
+
+    :param size: Size of aggregation groups in the tree
+    :type size: int
+
+    :param num_actors: Number of actors in each group of the tree
+    :type num_actors: int
+
+    :return: A tuple where the first element is the aggregation tree, while
+        the other is a dictionary for each particiapnts of the
+        groups it is in
+    :rtype: tuple[AggregationTree, dict[string, list[AggregationGroup]]]
+    """
     current_level_participants = participants
     aggregation_tree = AggregationTree()
     next_id = 0

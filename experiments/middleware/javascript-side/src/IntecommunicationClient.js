@@ -47,9 +47,14 @@ class IntercommunicationClient {
     if(this.connected) {
       if(!this.requestPending) {
         console.log('Sending request');
-        const serializedModel = JSON.stringify(await serializeWeights(model));
+        const startTime = +new Date; // consider serialization is overhead as well
         this.requestPending = true;
-        this.socket.write(serializedModel);
+        const serializedModel = await serializeWeights(model);
+        const message = {
+          'model': serializedModel,
+          'callTime': startTime
+        };
+        this.socket.write(JSON.stringify(message));
       }
       else {
         console.log('There is an ongoing request');

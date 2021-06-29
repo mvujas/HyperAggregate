@@ -48,6 +48,9 @@ def parse_args():
     parser.add_argument('--pre-aggregation-evaluation', default=False,
                         action='store_true',
                         help='Evaluate model before aggregation, not only after')
+    parser.add_argument('--log-file', default='log.txt', type=str,
+                        help='Path to file where the log should be written '\
+                            '(default: log.txt)')
     parser.add_argument('--debug', default=False,
                         action='store_true',
                         help='Activate debug mode.')
@@ -65,7 +68,7 @@ def main(args):
     # Prepare arguments for benchmark server
     benchamrk_server_args = {
         'port': args.benchmark_server_port,
-        'log_file': 'log_101.txt'
+        'log_file': args.log_file
     }
     # Prepare arguments for clients
     client_args = {

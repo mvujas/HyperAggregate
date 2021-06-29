@@ -199,6 +199,24 @@
 <dt class="sig sig-object py" id="hyperaggregate.server.privacy_preserving_server.SchedulingServer">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hyperaggregate.server.privacy_preserving_server.</span></span><span class="sig-name descname"><span class="pre">SchedulingServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_actors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregation_profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.server.privacy_preserving_server.SchedulingServer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="hyperaggregate.shared.html#hyperaggregate.shared.responsive_message_router.ResponsiveMessageRouter" title="hyperaggregate.shared.responsive_message_router.ResponsiveMessageRouter"><code class="xref py py-class docutils literal notranslate"><span class="pre">hyperaggregate.shared.responsive_message_router.ResponsiveMessageRouter</span></code></a></p>
+<p>Implementation of helper server</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>port</strong> – Port on which the server should run on</p></li>
+<li><p><strong>target_size</strong> – Required number of clients to sign up for aggregation
+before it starts</p></li>
+<li><p><strong>group_size</strong> – Preferable size of aggregation groups in aggregation
+tree</p></li>
+<li><p><strong>num_actors</strong> – Number of aggregation actors in each group of
+aggregation tree</p></li>
+<li><p><strong>aggregation_profile</strong> – Aggregation and message transport logic in form
+of AggregationProfile instance</p></li>
+<li><p><strong>debug_mode</strong> – Indicator whether to use verbose logging suitable for
+debugging</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="hyperaggregate.server.privacy_preserving_server.SchedulingServer.register_callbacks">
 <span class="sig-name descname"><span class="pre">register_callbacks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hyperaggregate.server.privacy_preserving_server.SchedulingServer.register_callbacks" title="Permalink to this definition">¶</a></dt>
@@ -216,6 +234,7 @@ keys associated with their coresponding callbacks as values</p>
 </div>
 <div class="section" id="module-hyperaggregate.server">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-hyperaggregate.server" title="Permalink to this headline">¶</a></h2>
+<p>Helper server</p>
 </div>
 </div>
 
